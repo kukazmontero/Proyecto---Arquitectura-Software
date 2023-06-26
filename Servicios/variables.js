@@ -2,10 +2,13 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('mydatabase.db');
 
-const regis = 'reges';
-const login = 'logen';
-const datos = 'dates';
-const prueb = 'prueb';
+let letra = "o"
+const regis = `regs${letra}`;
+const login = `logn${letra}`;
+const datos = `dats${letra}`;
+const prueb = `prub${letra}`;
+const vprue = `vpre${letra}`;
+
 const sshConfig = {
   host: '200.14.84.16',
   port: 8080,
@@ -13,15 +16,23 @@ const sshConfig = {
   password: 'gabriel20781'
 };
 
-
+function contarcaracteres(message2){
+  let largo = message2.length;
+  let largo2 = largo.toString().padStart(5, '0');
+  let messagefinal = largo2 + message2;
+  return messagefinal;
+}
 // Exportar las variables
 module.exports = {
   regis,
   login,
   datos, 
   prueb,
+  vprue,
+  contarcaracteres,
   sshConfig
 };
+//module.exports = contarcaracteres;
 
 // Consulta para crear la tabla
 const createTableQuery = `

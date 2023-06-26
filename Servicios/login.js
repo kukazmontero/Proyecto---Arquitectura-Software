@@ -2,7 +2,7 @@ const { Client } = require('ssh2');
 const readline = require('readline');
 
 const conn = new Client();
-const { login, datos, sshConfig } = require('./variables.js');
+const { login,contarcaracteres, datos, sshConfig } = require('./variables.js');
 
 
 
@@ -26,25 +26,29 @@ conn.on('ready', () => {
         if(parts[0] ===`${login}`){
           if (parts[2]) {
             nuevaconsulta =`${datos}-${login}-${parts[1]}-${parts[2]}`;
-            const largo = nuevaconsulta.length;
-            const largo2 = largo.toString().padStart(5, '0');
-            messagefinal = largo2 + nuevaconsulta;
+            messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
             stream.write(messagefinal);
           }
         }
         else{
           if(parts[2]==="si"){
-            console.log(`00014${login}-login-si-${parts[3]}-${parts[4]}-${parts[5]}-${parts[6]}`);
-            stream.write(`00014${login}-login-si-${parts[3]}-${parts[4]}-${parts[5]}-${parts[6]}`);
+            let message = `${login}-login-si-${parts[3]}-${parts[4]}-${parts[5]}-${parts[6]}`;
+            let messagef = contarcaracteres(message);
+            console.log(messagef);
+            stream.write(messagef);
           }
           else if(parts[2]==="mal"){
-            console.log(`00014${login}-login-mal`);
-            stream.write(`00014${login}-login-mal`);
+            let message = `00014${login}-login-mal`;
+            let messagef = contarcaracteres(message);
+            console.log(messagef);
+            stream.write(messagef);
           }
           else if(parts[2]==="no"){
-            console.log(`00014${login}-login-mal`);
-            stream.write(`00014${login}-login-no`);
+            let message = `00014${login}-login-no`;
+            let messagef = contarcaracteres(message);
+            console.log(messagef);
+            stream.write(messagef);
           }
         }
       });

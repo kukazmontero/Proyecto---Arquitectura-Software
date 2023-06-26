@@ -1,41 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Inicio</title>
+  <title>Opciones</title>
 </head>
 <body>
-  <h1>Inicio</h1>
-  <p>Usuario: <%= nombre %></p>
-  <p>Correo: <%= correo %></p>
+  <h1>HOME</h1>
+  <h1> <%= nombre %></h1>
+  <h1> <%= correo %></h1>
 
   <ul>
-    <style>
-      .button {
-        border: none;
-        color: rgb(0, 0, 0);
-        padding: 15px 32px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        cursor: pointer;
-      }
-      
-      .button1 {background-color: #ffffff; border: 2px solid #000000;}
-      </style>
-      </head>
-      <body>
-      
-        <% if (rol === '1') { %>
-          <a href="/registrarusuario" class="button button1">Registrar Usuario</a>
-        <% } %>
-      
-      <a href="/crearprueba" class="button button1">Crear Prueba</a>
-      <a href="/ver_pruebas" class="button button1">Ver Pruebas</a>
-      <a href="/cerrar_sesion" class="button button1">Cerrar Sesión</a>
-      <a href="/ver_progreso" class="button button1">Ver Progreso</a>
-
+    <% if (rol === '1') { %>
+      <li><a href="/registrarusuario">Registrar Usuario</a></li>
+    <% } %>
+    <li><a href="/crearprueba">Crear Prueba</a></li>
+    <li><a href="/ver_pruebas">Crear Prueba</a></li>
+    <li><a href="/cerrar_sesion">Cerrar Sesión</a></li>
+    <li><a href="/ver_progreso">Ver Progreso</a></li>
   </ul>
 </body>
 </html>

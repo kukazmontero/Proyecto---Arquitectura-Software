@@ -1,5 +1,5 @@
 const { Client } = require('ssh2');
-const { prueb, sshConfig } = require('../Servicios/variables.js');
+const { vprue,prueb, sshConfig } = require('../Servicios/variables.js');
 
 function clienteprueba(nombreprueba, asignatura, correo_creador, num_preg) {
   return new Promise((resolve, reject) => {
@@ -59,4 +59,72 @@ function clienteprueba(nombreprueba, asignatura, correo_creador, num_preg) {
     conn.connect(sshConfig);
   });
 }
-module.exports = clienteprueba;
+function clienteverprueba(rol) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+
+    conn.on('ready', () => {
+      console.log('Conexión SSH establecida');
+
+      conn.exec('telnet localhost 5000', (err, stream) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        service = `${vprue}`; 
+        const message = `${service}-${rol}`;
+        const largo = message.length;
+        const largo2 = largo.toString().padStart(5, '0');
+        messagefinal = largo2 + message;
+        console.log(`Mensaje enviado: ${messagefinal}`);
+
+        stream.write(messagefinal);
+        
+        stream.on('data', (data) => {
+          const response = data.toString().substring(5);
+          const parts = response.split('-');
+          console.log(parts)
+          let aux = parts[1];
+          let aux2 = parts[2];
+          let pruebas = parts.slice(3).join('-');
+          const prueba = pruebas.split('-');
+
+
+          if (aux === "verprueba") {
+            if (aux2 === "si") {
+              const pruebaData = prueba.map(prueba => {
+                const [nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg] = prueba.substring(1, prueba.length - 1).split(',');
+                return {
+                  nombreprueba,
+                  asignatura,
+                  correo_creador,
+                  num_preguntas,
+                  cant_preg
+                };
+              });
+              resolve(pruebaData);
+            } else if (aux2 === "no") {
+              const pruebaData = [];
+              resolve(pruebaData);
+            }
+          }
+
+        });
+      });
+    });
+
+    conn.on('error', (err) => {
+      reject(err);
+    });
+
+    conn.on('end', () => {
+      console.log('Conexión SSH cerrada');
+    });
+
+    conn.connect(sshConfig);
+  });
+}
+module.exports = {
+  clienteprueba,
+  clienteverprueba
+}

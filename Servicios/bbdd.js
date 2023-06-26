@@ -6,7 +6,7 @@ const { Client } = require('ssh2');
 
 const conn = new Client();
 
-const { regis, login, datos, prueb, sshConfig } = require('./variables.js');
+const { regis, login, datos, prueb, vprue,sshConfig } = require('./variables.js');
 
 
 conn.on('ready', () => {
@@ -30,10 +30,10 @@ conn.on('ready', () => {
                 console.log(err)
               } else {
                   if(results==='agregado'){
-                      stream.write(`00014${datos}-agregado-si`);
+                      stream.write(`00017${datos}-agregado-si`);
                   }
                   else if(results==='noagregado'){
-                      stream.write(`00016${datos}-agregado-no`);
+                      stream.write(`00017${datos}-agregado-no`);
                   }
               }
           });       
@@ -44,13 +44,29 @@ conn.on('ready', () => {
               console.log(err)
             } else {
                 if(results.aux==='correcta'){
-                    stream.write(`00016${datos}-logeado-si-${results.usuario}-${results.correo}-${results.contraseña}-${results.rol}`);
+                  const message = `${datos}-logeado-si-${results.usuario}-${results.correo}-${results.contraseña}-${results.rol}`;
+                  const largo = message.length;
+                  const largo2 = largo.toString().padStart(5, '0');
+                  messagefinal = largo2 + message;
+                  console.log(`Mensaje enviado: ${messagefinal}`);
+                  stream.write(messagefinal)
                 }
                 if(results==='incorrecta'){
-                      stream.write(`00016${datos}-logeado-mal`);
+                  const message = `${datos}-logeado-mal`;
+                  const largo = message.length;
+                  const largo2 = largo.toString().padStart(5, '0');
+                  messagefinal = largo2 + message;
+                  console.log(`Mensaje enviado: ${messagefinal}`);
+                  stream.write(messagefinal)
+
                   }
                 else if(results==='noencontrado'){
-                    stream.write(`00016${datos}-logeado-no`);
+                    const message = `${datos}-logeado-no`;
+                  const largo = message.length;
+                  const largo2 = largo.toString().padStart(5, '0');
+                  messagefinal = largo2 + message;
+                  console.log(`Mensaje enviado: ${messagefinal}`);
+                  stream.write(messagefinal)
                 }
             }
           });       
@@ -69,6 +85,36 @@ conn.on('ready', () => {
             }
         });
 
+        }
+        else if (parts[1] === vprue) {console.log(parts[2])
+          verPrueba(parts[2], (err, results) => {
+            if (err) {
+              console.log(err);
+            } else {
+              if (results === "noencontrado") {
+                service = `${datos}`; 
+                const message2 = `${service}-verprueba-no`;
+                const largo = message2.length;
+                const largo2 = largo.toString().padStart(5, '0');
+                messagefinal = largo2 + message2;
+                console.log(`Mensaje enviado: ${messagefinal}`);
+                stream.write(messagefinal);
+              } else {
+                  const message = results.reduce((acc, prueba) => {
+                  const { nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
+                  const resultado = `-[${nombreprueba},${asignatura},${correo_creador},${num_preguntas},${cant_preg}]`;
+                  return acc + resultado;
+                }, '');
+                service = `${datos}`; 
+                const message2 = `${service}-verprueba-si${message}`;
+                const largo = message2.length;
+                const largo2 = largo.toString().padStart(5, '0');
+                messagefinal = largo2 + message2;
+                console.log(`Mensaje enviado: ${messagefinal}`);
+                stream.write(messagefinal);          
+              }
+            }
+          });
         }
 
 
@@ -169,4 +215,69 @@ function crearprueba(nombreprueba, asignatura, correo_creador, num_preguntas, ca
   callback(null, 'agregado');
             
           
+}
+function verPrueba( rol, callback) {
+  const query = `SELECT * FROM tabla_pruebas`;
+  /*console.log(rol)
+  console.log(parseInt(rol) === 1)*/
+
+  if (parseInt(rol) === 1 || parseInt(rol) === 2 ) {
+    // Rol igual a 1, buscar todas las pruebas
+    db.all(query, (err, results) => {console.log(results)
+      if (err) {
+        callback(err);
+      } else {
+        if (results.length === 0) {
+          console.log("Prueba no encontrada");
+          callback(null, "noencontrado");
+        } else {
+          const pruebas = results.map((prueba) => {
+            const { nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
+            return {
+              nombreprueba,
+              asignatura,
+              correo_creador,
+              num_preguntas,
+              cant_preg
+            };
+          });
+          callback(null, pruebas);
+        }
+      }
+    });
+  } else if (parseInt(rol) === 3) {
+    db.all(query, (err, results) => {
+      if (err) {
+        callback(err);
+      } else {
+        if (results.length === 0) {
+          console.log("Prueba no encontrada");
+          callback(null, "noencontrado");
+        } else {
+          const pruebas = results.filter((prueba) => prueba.cant_preg === prueba.num_preguntas)
+            .map((prueba) => {
+              const { nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
+              return {
+                nombreprueba,
+                asignatura,
+                correo_creador,
+                num_preguntas,
+                cant_preg
+              };
+            });
+            console.log(pruebas.length)
+          if(pruebas.length === 0){
+            callback(null, "noencontrado");
+          }
+          else{
+            callback(null, pruebas);
+          }
+          
+        }
+      }
+    });
+  } else {
+    // Otro rol no compatible
+    callback(null, "noencontrado");
+  }
 }

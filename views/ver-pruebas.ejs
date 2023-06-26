@@ -1,0 +1,16 @@
+<!-- ver-pruebas.ejs -->
+<h1>Lista de Pruebas</h1>
+
+<% if (respuesta.length > 0) { %>
+  <% respuesta.forEach(function(prueba) { %>
+    <div>
+      <p>Nombre de la prueba: <%= prueba.nombreprueba %></p>
+      <p>Asignatura: <%= prueba.asignatura %></p>
+      <p>Correo del creador: <%= prueba.correo_creador %></p>
+      <p>Número de preguntas: <%= prueba.num_preguntas %></p>
+      <p>Cantidad de preguntas: <%= prueba.cant_preg %></p>
+    </div>
+  <% }); %>
+<% } else { %>
+  <p>No hay pruebas disponibles</p>
+<% } %>

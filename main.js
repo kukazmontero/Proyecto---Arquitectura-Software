@@ -9,7 +9,9 @@ app.use(express.static('public'));
 
 const clientelogin = require('./Clientes/cliente-login');
 const clienteregistro = require('./Clientes/cliente-registro');
-const clienteprueba = require('./Clientes/cliente-prueba');
+const { clienteprueba, clienteverprueba } = require('./Clientes/cliente-prueba');
+//const { clienteverprueba } = require('./Servicios/auxxx');
+
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -71,6 +73,22 @@ app.post('/formprueba', async (req, res) => {
     res.send("Error en la conexión SSH");
   }
 });
+app.post('/verpruebas', async (req, res) => {
+  let rol = req.session.rol;
+  try {
+    const respuesta = await clienteverprueba(rol);
+    console.log(respuesta);
+
+    if (respuesta === "si") {
+      res.redirect('ver_pruebas');
+    } else if (respuesta === "no") {
+      res.render("/");
+    }
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+});
 
 app.post('/registrousuario', async (req, res) => {
   const { nombre, correo, password, rol } = req.body;
@@ -119,9 +137,20 @@ app.get('/crearprueba', (req, res) => {
   }
 });
 
-app.get('/ver_progreso', (req, res) => {
+app.get('/ver_pruebas', async (req, res) => {
   if (req.session.loggedIn) {
-    res.sendFile('ver_progreso');
+  let rol = req.session.rol;
+  try {
+    const respuesta = await clienteverprueba(rol);
+    console.log(respuesta);
+    res.render('ver-pruebas', { respuesta: respuesta });
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+  
+    
   } else {
     res.redirect('/');
   }
