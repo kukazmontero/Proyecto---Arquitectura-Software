@@ -1,17 +1,57 @@
 <!-- ver-pruebas.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ver Pruebas</title>
+</head>
+<body>
+
+
 <h1>Lista de Pruebas</h1>
+
+<style>
+  .button {
+      border: none;
+      color: rgb(0, 0, 0);
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    
+  .button1 {background-color: #ffffff; border: 2px solid #000000;}
+  .borde {border: 2px solid #000000;}
+  </style>
+
 
 <% if (respuesta.length > 0) { %>
   <% respuesta.forEach(function(prueba) { %>
-    <div>
-      <p>ID: <%= prueba.id %></p>
+    <div class="borde">
       <p>Nombre de la prueba: <%= prueba.nombreprueba %></p>
       <p>Asignatura: <%= prueba.asignatura %></p>
       <p>Correo del creador: <%= prueba.correo_creador %></p>
       <p>Número de preguntas: <%= prueba.num_preguntas %></p>
       <p>Cantidad de preguntas: <%= prueba.cant_preg %></p>
+
+      <% if (rol === '1' || rol === '2') { %>
+        <a href="/agregarpregunta" class="button button1">Agregar Pregunta</a>
+        <a href="/modificarprueba" class="button button1">Modificar Prueba</a>
+        <a href="/borrarprueba" class="button button1">Borrar Prueba</a>
+      <% } %>
+
+      <% if (rol === '3') { %>
+        <a href="/realizarprueba" class="button button1">Realizar Prueba</a>
+      <% } %>
+      
+
     </div>
   <% }); %>
 <% } else { %>
   <p>No hay pruebas disponibles</p>
 <% } %>
+
+</body>

@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('mydatabase.db');
 
-let letra = "z"
+let letra = "q"
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
 const datos = `dats${letra}`;
@@ -12,8 +12,8 @@ const vprue = `vpre${letra}`;
 const sshConfig = {
   host: '200.14.84.16',
   port: 8080,
-  username: 'gabriel.gonzalez1',
-  password: 'gabriel20781'
+  username: 'lukas.montero',
+  password: 'lukas12344321'
 };
 
 function contarcaracteres(message2){
@@ -43,28 +43,17 @@ const createTableQuery = `
     correo TEXT UNIQUE
   )
 `;
-
-const dropTableQuery = 'DROP TABLE IF EXISTS tabla_pruebas';
-const createTableQuery2 = 'CREATE TABLE tabla_pruebas (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, asignatura TEXT, correo_creador TEXT, num_preguntas INTEGER, cant_preg INTEGER)';
-// Primero, eliminamos la tabla si existe
-/*db.run(dropTableQuery, function(err) {
-  if (err) {
-    console.error(err);
-    return;
-  }
-
-  // Luego, creamos la tabla nuevamente
-  db.run(createTableQuery2, function(err) {
-    if (err) {
-      console.error(err);
-      return;
-    }
-
-    console.log('Tabla "tabla_pruebas" creada correctamente');
-  });
-});
+const createTableQuery2 = `
+  CREATE TABLE IF NOT EXISTS tabla_pruebas (
+    nombreprueba TEXT,
+    asignatura TEXT,
+    correo_creador TEXT,
+    num_preguntas INTEGER, 
+    cant_preg INTEGER
+  )
+`;
 // Ejecutar la consulta
-
+/*
 db.run(createTableQuery, (error) => {
   if (error) {
     console.error('Error al crear la tabla:', error.message);
