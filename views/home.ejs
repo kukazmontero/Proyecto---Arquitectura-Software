@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Opciones</title>
+</head>
+<body>
+  <h1>HOME</h1>
+  <h1> <%= nombre %></h1>
+  <h1> <%= correo %></h1>
+
+  <ul>
+    <% if (rol === '1') { %>
+      <li><a href="/registrarusuario">Registrar Usuario</a></li>
+    <% } %>
+    <li><a href="/crearprueba">Crear Prueba</a></li>
+    <li><a href="/ver_pruebas">Ver Prueba</a></li>
+    <li><a href="/cerrar_sesion">Cerrar Sesión</a></li>
+    <li><a href="/ver_progreso">Ver Progreso</a></li>
+  </ul>
+</body>
+</html>

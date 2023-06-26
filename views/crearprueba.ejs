@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crear Prueba</title>
+</head>
+<body>
+  <h1>Crear Prueba</h1>
+  <form action="/formprueba" method="POST">
+    <label for="nombreprueba">Nombre:</label>
+    <input type="text" id="nombreprueba" name="nombreprueba" required><br><br>
+    <label for="num_preg">Cantidad de preguntas que tendra la prueba:</label>
+    <select id="num_preg" name="num_preg" required>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+      <option value="9">9</option>
+      <option value="10">10</option>
+    </select><br><br>
+    <label for="asignatura">Asignatura:</label>
+    <select id="asignatura" name="asignatura" required>
+      <option value="Matematicas">Matematicas</option>
+      <option value="Lenguaje">Lenguaje</option>
+      <option value="Historia">Historia</option>
+      <option value="Ciencias">Ciencias</option>
+    </select><br><br>
+
+    <input type="submit" value="Enviar">
+  </form>
+</body>
+</html>
