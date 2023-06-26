@@ -128,7 +128,7 @@ app.get('/ver_pruebas', async (req, res) => {
   try {
     const respuesta = await clienteverprueba(rol);
     console.log(respuesta);
-    res.render('ver-pruebas', { respuesta: respuesta });
+    res.render('ver-pruebas', { respuesta: respuesta, rol: rol });
 
   } catch (error) {
     console.error(error);
