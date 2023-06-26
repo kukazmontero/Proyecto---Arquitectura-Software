@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('mydatabase.db');
 
-let letra = "o"
+let letra = "z"
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
 const datos = `dats${letra}`;
@@ -43,17 +43,28 @@ const createTableQuery = `
     correo TEXT UNIQUE
   )
 `;
-const createTableQuery2 = `
-  CREATE TABLE IF NOT EXISTS tabla_pruebas (
-    nombreprueba TEXT,
-    asignatura TEXT,
-    correo_creador TEXT,
-    num_preguntas INTEGER, 
-    cant_preg INTEGER
-  )
-`;
+
+const dropTableQuery = 'DROP TABLE IF EXISTS tabla_pruebas';
+const createTableQuery2 = 'CREATE TABLE tabla_pruebas (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, asignatura TEXT, correo_creador TEXT, num_preguntas INTEGER, cant_preg INTEGER)';
+// Primero, eliminamos la tabla si existe
+/*db.run(dropTableQuery, function(err) {
+  if (err) {
+    console.error(err);
+    return;
+  }
+
+  // Luego, creamos la tabla nuevamente
+  db.run(createTableQuery2, function(err) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+
+    console.log('Tabla "tabla_pruebas" creada correctamente');
+  });
+});
 // Ejecutar la consulta
-/*
+
 db.run(createTableQuery, (error) => {
   if (error) {
     console.error('Error al crear la tabla:', error.message);

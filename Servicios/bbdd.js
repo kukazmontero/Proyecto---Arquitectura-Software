@@ -101,8 +101,8 @@ conn.on('ready', () => {
                 stream.write(messagefinal);
               } else {
                   const message = results.reduce((acc, prueba) => {
-                  const { nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
-                  const resultado = `-[${nombreprueba},${asignatura},${correo_creador},${num_preguntas},${cant_preg}]`;
+                  const { id, nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
+                  const resultado = `-[${id},${nombreprueba},${asignatura},${correo_creador},${num_preguntas},${cant_preg}]`;
                   return acc + resultado;
                 }, '');
                 service = `${datos}`; 
@@ -202,7 +202,7 @@ function ingreso(correo, password, callback) {
 }
 function crearprueba(nombreprueba, asignatura, correo_creador, num_preguntas, callback) {
   // Ejemplo de consulta a la base de datos con los valores de username y password como parámetros
-  const query = 'INSERT INTO tabla_pruebas (nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg) VALUES (?, ?, ?, ?, ?)';
+  const query = 'INSERT INTO tabla_pruebas (nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg) VALUES ( ?, ?, ?, ?, ?)';
 
   db.run(query, [nombreprueba, asignatura, correo_creador, num_preguntas, 0], function(err) {
       if (err) {
@@ -217,13 +217,13 @@ function crearprueba(nombreprueba, asignatura, correo_creador, num_preguntas, ca
           
 }
 function verPrueba( rol, callback) {
-  const query = `SELECT * FROM tabla_pruebas`;
+  const query = `SELECT ROWID, * FROM tabla_pruebas`;
   /*console.log(rol)
   console.log(parseInt(rol) === 1)*/
 
   if (parseInt(rol) === 1 || parseInt(rol) === 2 ) {
     // Rol igual a 1, buscar todas las pruebas
-    db.all(query, (err, results) => {console.log(results)
+    db.all(query, (err, results) => {
       if (err) {
         callback(err);
       } else {
@@ -232,8 +232,9 @@ function verPrueba( rol, callback) {
           callback(null, "noencontrado");
         } else {
           const pruebas = results.map((prueba) => {
-            const { nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
+            const { ROWID, nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
             return {
+              id : ROWID,
               nombreprueba,
               asignatura,
               correo_creador,

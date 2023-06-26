@@ -73,22 +73,7 @@ app.post('/formprueba', async (req, res) => {
     res.send("Error en la conexión SSH");
   }
 });
-app.post('/verpruebas', async (req, res) => {
-  let rol = req.session.rol;
-  try {
-    const respuesta = await clienteverprueba(rol);
-    console.log(respuesta);
 
-    if (respuesta === "si") {
-      res.redirect('ver_pruebas');
-    } else if (respuesta === "no") {
-      res.render("/");
-    }
-  } catch (error) {
-    console.error(error);
-    res.send("Error en la conexión SSH");
-  }
-});
 
 app.post('/registrousuario', async (req, res) => {
   const { nombre, correo, password, rol } = req.body;

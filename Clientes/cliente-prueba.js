@@ -93,8 +93,9 @@ function clienteverprueba(rol) {
           if (aux === "verprueba") {
             if (aux2 === "si") {
               const pruebaData = prueba.map(prueba => {
-                const [nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg] = prueba.substring(1, prueba.length - 1).split(',');
+                const [id,nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg] = prueba.substring(1, prueba.length - 1).split(',');
                 return {
+                  id,
                   nombreprueba,
                   asignatura,
                   correo_creador,

@@ -4,6 +4,7 @@
 <% if (respuesta.length > 0) { %>
   <% respuesta.forEach(function(prueba) { %>
     <div>
+      <p>ID: <%= prueba.id %></p>
       <p>Nombre de la prueba: <%= prueba.nombreprueba %></p>
       <p>Asignatura: <%= prueba.asignatura %></p>
       <p>Correo del creador: <%= prueba.correo_creador %></p>
