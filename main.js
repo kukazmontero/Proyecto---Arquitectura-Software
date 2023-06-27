@@ -191,7 +191,7 @@ app.post("/modificarprueba", async (req, res) => {
 
   if (req.session.loggedIn) {
     try {
-      res.redirect("ver_pruebas", { id_prueba: id_prueba });
+      res.render("editarprueba", { id_prueba: id_prueba });
     } catch (error) {
       console.error(error);
       res.send("Error en la conexión SSH");

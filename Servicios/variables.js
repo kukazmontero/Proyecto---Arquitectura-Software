@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('mydatabase.db');
 
-let letra = "b"
+let letra = "c"
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
 const datos = `dats${letra}`;
@@ -10,7 +10,7 @@ const prueb = `prub${letra}`;
 const vprue = `vpre${letra}`;
 const dprue = `dpre${letra}`;
 const vusri = `vusr${letra}`;
-const eprue = `epre${letra}`
+const eprue = `epre${letra}`;
 
 const sshConfig = {
   host: '200.14.84.16',
