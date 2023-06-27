@@ -28,6 +28,8 @@
   </style>
 
 
+
+
 <% if (respuesta.length > 0) { %>
   <% respuesta.forEach(function(prueba) { %>
     <div class="borde">
@@ -36,11 +38,17 @@
       <p>Correo del creador: <%= prueba.correo_creador %></p>
       <p>Número de preguntas: <%= prueba.num_preguntas %></p>
       <p>Cantidad de preguntas: <%= prueba.cant_preg %></p>
+      <p>id: <%= prueba.id %></p>
 
       <% if (rol === '1' || rol === '2') { %>
         <a href="/agregarpregunta" class="button button1">Agregar Pregunta</a>
         <a href="/modificarprueba" class="button button1">Modificar Prueba</a>
-        <a href="/borrarprueba" class="button button1" onclick="borrarPrueba(event, '<%= prueba.id_prueba %>', '<%= prueba.correo_creador %>')">Borrar Prueba</a>
+       
+        <form action="/borrarprueba" method="POST">
+      
+          <input type="hidden" name="id" value=<%= prueba.id %>>
+          <input type="submit" class="button1" value="Borrar">
+        </form>
       <% } %>
 
       <% if (rol === '3') { %>

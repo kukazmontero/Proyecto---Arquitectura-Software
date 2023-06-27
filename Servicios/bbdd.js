@@ -91,33 +91,26 @@ conn.on("ready", () => {
             console.log(err);
           } else {
             if (results === "noencontrado") {
-              service = `${datos}`;
+              service = `${datos}`; 
               const message2 = `${service}-verprueba-no`;
               const largo = message2.length;
-              const largo2 = largo.toString().padStart(5, "0");
+              const largo2 = largo.toString().padStart(5, '0');
               messagefinal = largo2 + message2;
               console.log(`Mensaje enviado: ${messagefinal}`);
               stream.write(messagefinal);
             } else {
-              const message = results.reduce((acc, prueba) => {
-                const {
-                  id,
-                  nombreprueba,
-                  asignatura,
-                  correo_creador,
-                  num_preguntas,
-                  cant_preg,
-                } = prueba;
+                const message = results.reduce((acc, prueba) => {
+                const { id, nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
                 const resultado = `-[${id},${nombreprueba},${asignatura},${correo_creador},${num_preguntas},${cant_preg}]`;
                 return acc + resultado;
-              }, "");
-              service = `${datos}`;
+              }, '');
+              service = `${datos}`; 
               const message2 = `${service}-verprueba-si${message}`;
               const largo = message2.length;
-              const largo2 = largo.toString().padStart(5, "0");
+              const largo2 = largo.toString().padStart(5, '0');
               messagefinal = largo2 + message2;
               console.log(`Mensaje enviado: ${messagefinal}`);
-              stream.write(messagefinal);
+              stream.write(messagefinal);          
             }
           }
         });
@@ -239,12 +232,12 @@ function crearprueba(
   );
   callback(null, "agregado");
 }
-function verPrueba(rol, callback) {
+function verPrueba( rol, callback) {
   const query = `SELECT ROWID, * FROM tabla_pruebas`;
   /*console.log(rol)
   console.log(parseInt(rol) === 1)*/
 
-  if (parseInt(rol) === 1 || parseInt(rol) === 2) {
+  if (parseInt(rol) === 1 || parseInt(rol) === 2 ) {
     // Rol igual a 1, buscar todas las pruebas
     db.all(query, (err, results) => {
       if (err) {
@@ -255,21 +248,14 @@ function verPrueba(rol, callback) {
           callback(null, "noencontrado");
         } else {
           const pruebas = results.map((prueba) => {
-            const {
-              ROWID,
-              nombreprueba,
-              asignatura,
-              correo_creador,
-              num_preguntas,
-              cant_preg,
-            } = prueba;
+            const { ROWID, nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
             return {
-              id: ROWID,
+              id : ROWID,
               nombreprueba,
               asignatura,
               correo_creador,
               num_preguntas,
-              cant_preg,
+              cant_preg
             };
           });
           callback(null, pruebas);
@@ -285,30 +271,25 @@ function verPrueba(rol, callback) {
           console.log("Prueba no encontrada");
           callback(null, "noencontrado");
         } else {
-          const pruebas = results
-            .filter((prueba) => prueba.cant_preg === prueba.num_preguntas)
+          const pruebas = results.filter((prueba) => prueba.cant_preg === prueba.num_preguntas)
             .map((prueba) => {
-              const {
-                nombreprueba,
-                asignatura,
-                correo_creador,
-                num_preguntas,
-                cant_preg,
-              } = prueba;
+              const { nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg } = prueba;
               return {
                 nombreprueba,
                 asignatura,
                 correo_creador,
                 num_preguntas,
-                cant_preg,
+                cant_preg
               };
             });
-          console.log(pruebas.length);
-          if (pruebas.length === 0) {
+            console.log(pruebas.length)
+          if(pruebas.length === 0){
             callback(null, "noencontrado");
-          } else {
+          }
+          else{
             callback(null, pruebas);
           }
+          
         }
       }
     });
@@ -317,7 +298,6 @@ function verPrueba(rol, callback) {
     callback(null, "noencontrado");
   }
 }
-
 function borrarPrueba(id, correo_creador, callback) {
   const query =
     "DELETE FROM tabla_pruebas WHERE ROWID = ? AND correo_creador = ?";
@@ -334,3 +314,7 @@ function borrarPrueba(id, correo_creador, callback) {
     }
   });
 }
+
+module.exports = {
+  borrarPrueba
+};

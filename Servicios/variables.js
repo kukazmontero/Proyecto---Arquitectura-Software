@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('mydatabase.db');
 
-let letra = "z"
+let letra = "t"
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
 const datos = `dats${letra}`;
@@ -13,8 +13,8 @@ const dprue = `dpre${letra}`;
 const sshConfig = {
   host: '200.14.84.16',
   port: 8080,
-  username: 'gabriel.gonzalez1',
-  password: 'gabriel20781'
+  username: 'lukas.montero',
+  password: 'lukas12344321'
 };
 
 function contarcaracteres(message2){

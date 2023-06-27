@@ -9,7 +9,7 @@ app.use(express.static('public'));
 
 const clientelogin = require('./Clientes/cliente-login');
 const clienteregistro = require('./Clientes/cliente-registro');
-const { clienteprueba, clienteverprueba } = require('./Clientes/cliente-prueba');
+const { clienteprueba, clienteverprueba, clienteborrarprueba } = require('./Clientes/cliente-prueba');
 //const { clienteverprueba } = require('./Servicios/auxxx');
 
 
@@ -142,12 +142,23 @@ app.get('/ver_pruebas', async (req, res) => {
 });
 
 app.post('/borrarprueba', async (req, res) => {
-  const { id_prueba, correo } = req.body;
+  console.log("ENTRO LPTM 0")
+
+  const id_prueba = req.body.id;
+
+  correo = req.session.correo
+
+  console.log(id_prueba, correo)
+
   if (req.session.loggedIn) {
+    console.log("ENTRO LPTM 2")
     try {
+      console.log("SEXO1")
       const respuesta = await clienteborrarprueba(id_prueba, correo);
       console.log(respuesta);
-      res.render('borrar-pruebas', { respuesta: id_prueba, correo: correo });
+      res.render('ver-pruebas', { respuesta: id_prueba, correo});
+      console.log("SEXO2")
+
     } catch (error) {
       console.error(error);
       res.send("Error en la conexión SSH");

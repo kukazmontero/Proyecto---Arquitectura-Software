@@ -1,6 +1,8 @@
 const { Client } = require("ssh2");
 const { dprue, vprue, prueb, sshConfig } = require("../Servicios/variables.js");
 
+import { borrarPrueba } from '../Servicios/bbdd.js';
+
 function clienteprueba(nombreprueba, asignatura, correo_creador, num_preg) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
@@ -56,48 +58,44 @@ function clienteverprueba(rol) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
 
-    conn.on("ready", () => {
-      console.log("Conexión SSH establecida");
+    conn.on('ready', () => {
+      console.log('Conexión SSH establecida');
 
-      conn.exec("telnet localhost 5000", (err, stream) => {
+      conn.exec('telnet localhost 5000', (err, stream) => {
         if (err) {
           reject(err);
           return;
         }
-        service = `${vprue}`;
+        service = `${vprue}`; 
         const message = `${service}-${rol}`;
         const largo = message.length;
-        const largo2 = largo.toString().padStart(5, "0");
+        const largo2 = largo.toString().padStart(5, '0');
         messagefinal = largo2 + message;
         console.log(`Mensaje enviado: ${messagefinal}`);
 
-        stream.write(messagefinal); //envia mensaje al servicio
-
-        stream.on("data", (data) => {
+        stream.write(messagefinal);
+        
+        stream.on('data', (data) => {
           const response = data.toString().substring(5);
-          const parts = response.split("-");
-          console.log(parts);
+          const parts = response.split('-');
+          console.log(parts)
           let aux = parts[1];
           let aux2 = parts[2];
-          let pruebas = parts.slice(3).join("-");
-          const prueba = pruebas.split("-");
+          let pruebas = parts.slice(3).join('-');
+          const prueba = pruebas.split('-');
+
 
           if (aux === "verprueba") {
             if (aux2 === "si") {
-              const pruebaData = prueba.map((prueba) => {
-                const [
-                  nombreprueba,
-                  asignatura,
-                  correo_creador,
-                  num_preguntas,
-                  cant_preg,
-                ] = prueba.substring(1, prueba.length - 1).split(",");
+              const pruebaData = prueba.map(prueba => {
+                const [id,nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg] = prueba.substring(1, prueba.length - 1).split(',');
                 return {
+                  id,
                   nombreprueba,
                   asignatura,
                   correo_creador,
                   num_preguntas,
-                  cant_preg,
+                  cant_preg
                 };
               });
               resolve(pruebaData);
@@ -106,16 +104,17 @@ function clienteverprueba(rol) {
               resolve(pruebaData);
             }
           }
+
         });
       });
     });
 
-    conn.on("error", (err) => {
+    conn.on('error', (err) => {
       reject(err);
     });
 
-    conn.on("end", () => {
-      console.log("Conexión SSH cerrada");
+    conn.on('end', () => {
+      console.log('Conexión SSH cerrada');
     });
 
     conn.connect(sshConfig);
@@ -125,15 +124,17 @@ function clienteverprueba(rol) {
 function clienteborrarprueba(id_prueba, correo_creador) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
-
     conn.on("ready", () => {
       console.log("Conexión SSH establecida");
 
       conn.exec("telnet localhost 5000", (err, stream) => {
         if (err) {
+          console.log("ENTRO")
           reject(err);
           return;
         }
+
+        console.log("WENAZO")
 
         service = `${dprue}`;
         const message = `${service}-${id_prueba}-${correo_creador}`;
@@ -180,5 +181,5 @@ function clienteborrarprueba(id_prueba, correo_creador) {
 module.exports = {
   clienteprueba,
   clienteverprueba,
-  clienteborrarprueba,
+  clienteborrarprueba
 };

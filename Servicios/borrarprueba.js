@@ -14,7 +14,8 @@ conn.on('ready', () => {
         console.log('Conexión al bus de servicio cerrada');
         conn.end();
       }).on('data', (data) => {
-        
+      
+
         const response = data.toString().substring(5); 
         console.log('Datos recibidos:', response);
         const parts = response.split('-');
@@ -23,8 +24,8 @@ conn.on('ready', () => {
         if(parts[0] ===`${dprue}`){
           if (response.trim() !== '' && parts[1]) {
             servicio = `${datos}`;
-            console.log(`ROWID: ${parts[0]}`, `correo_creador: ${parts[1]}`)
-            nuevaconsulta =`${servicio}-${dprue}-${parts[0]}-${parts[1]}`;
+            console.log(`ROWID: ${parts[2]}`, `correo_creador: ${parts[3]}`)
+            nuevaconsulta =`${servicio}-${dprue}-${parts[2]}-${parts[3]}`;
             messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
             stream.write(messagefinal);
