@@ -1,106 +1,103 @@
-const { Client } = require('ssh2');
-const { vprue,prueb, sshConfig } = require('../Servicios/variables.js');
+const { Client } = require("ssh2");
+const { dprue, vprue, prueb, sshConfig } = require("../Servicios/variables.js");
 
 function clienteprueba(nombreprueba, asignatura, correo_creador, num_preg) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
 
-    conn.on('ready', () => {
-      console.log('Conexión SSH establecida');
+    conn.on("ready", () => {
+      console.log("Conexión SSH establecida");
 
-      conn.exec('telnet localhost 5000', (err, stream) => {
+      conn.exec("telnet localhost 5000", (err, stream) => {
         if (err) {
           reject(err);
           return;
         }
-        service = `${prueb}`; 
+        service = `${prueb}`;
         const message = `${service}-${nombreprueba}-${asignatura}-${correo_creador}-${num_preg}`;
         const largo = message.length;
-        const largo2 = largo.toString().padStart(5, '0');
+        const largo2 = largo.toString().padStart(5, "0");
         messagefinal = largo2 + message;
         console.log(`Mensaje enviado: ${messagefinal}`);
 
         stream.write(messagefinal);
 
-           
-        
-
-
-
-        stream.on('data', (data) => {
+        stream.on("data", (data) => {
           const response = data.toString().substring(5);
           console.log(response);
-          const parts = response.split('-');
+          const parts = response.split("-");
 
-
-          if(parts[1]==="pruebas"){
-            if(parts[2]==="si"){
-              console.log("La prueba se creo correctamente")
+          if (parts[1] === "pruebas") {
+            if (parts[2] === "si") {
+              console.log("La prueba se creo correctamente");
               resolve("si");
-            }
-            else if(parts[2]==="no"){
-              console.log("La prueba no se pudo crear")
-              resolve("no")
+            } else if (parts[2] === "no") {
+              console.log("La prueba no se pudo crear");
+              resolve("no");
             }
           }
-
         });
       });
     });
 
-    conn.on('error', (err) => {
+    conn.on("error", (err) => {
       reject(err);
     });
 
-    conn.on('end', () => {
-      console.log('Conexión SSH cerrada');
+    conn.on("end", () => {
+      console.log("Conexión SSH cerrada");
     });
 
     conn.connect(sshConfig);
   });
 }
+
 function clienteverprueba(rol) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
 
-    conn.on('ready', () => {
-      console.log('Conexión SSH establecida');
+    conn.on("ready", () => {
+      console.log("Conexión SSH establecida");
 
-      conn.exec('telnet localhost 5000', (err, stream) => {
+      conn.exec("telnet localhost 5000", (err, stream) => {
         if (err) {
           reject(err);
           return;
         }
-        service = `${vprue}`; 
+        service = `${vprue}`;
         const message = `${service}-${rol}`;
         const largo = message.length;
-        const largo2 = largo.toString().padStart(5, '0');
+        const largo2 = largo.toString().padStart(5, "0");
         messagefinal = largo2 + message;
         console.log(`Mensaje enviado: ${messagefinal}`);
 
-        stream.write(messagefinal);
-        
-        stream.on('data', (data) => {
+        stream.write(messagefinal); //envia mensaje al servicio
+
+        stream.on("data", (data) => {
           const response = data.toString().substring(5);
-          const parts = response.split('-');
-          console.log(parts)
+          const parts = response.split("-");
+          console.log(parts);
           let aux = parts[1];
           let aux2 = parts[2];
-          let pruebas = parts.slice(3).join('-');
-          const prueba = pruebas.split('-');
-
+          let pruebas = parts.slice(3).join("-");
+          const prueba = pruebas.split("-");
 
           if (aux === "verprueba") {
             if (aux2 === "si") {
-              const pruebaData = prueba.map(prueba => {
-                const [id,nombreprueba, asignatura, correo_creador, num_preguntas, cant_preg] = prueba.substring(1, prueba.length - 1).split(',');
-                return {
-                  id,
+              const pruebaData = prueba.map((prueba) => {
+                const [
                   nombreprueba,
                   asignatura,
                   correo_creador,
                   num_preguntas,
-                  cant_preg
+                  cant_preg,
+                ] = prueba.substring(1, prueba.length - 1).split(",");
+                return {
+                  nombreprueba,
+                  asignatura,
+                  correo_creador,
+                  num_preguntas,
+                  cant_preg,
                 };
               });
               resolve(pruebaData);
@@ -109,23 +106,79 @@ function clienteverprueba(rol) {
               resolve(pruebaData);
             }
           }
-
         });
       });
     });
 
-    conn.on('error', (err) => {
+    conn.on("error", (err) => {
       reject(err);
     });
 
-    conn.on('end', () => {
-      console.log('Conexión SSH cerrada');
+    conn.on("end", () => {
+      console.log("Conexión SSH cerrada");
     });
 
     conn.connect(sshConfig);
   });
 }
+
+function clienteborrarprueba(id_prueba, correo_creador) {
+  return new Promise((resolve, reject) => {
+    const conn = new Client();
+
+    conn.on("ready", () => {
+      console.log("Conexión SSH establecida");
+
+      conn.exec("telnet localhost 5000", (err, stream) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        service = `${dprue}`;
+        const message = `${service}-${id_prueba}-${correo_creador}`;
+        const largo = message.length;
+        const largo2 = largo.toString().padStart(5, "0");  //borro los 5 primeros caracteres 00014
+        messagefinal = largo2 + message;
+        console.log(`Mensaje enviado: ${messagefinal}`);
+
+        stream.write(messagefinal);
+
+        stream.on("data", (data) => {
+          const response = data.toString().substring(5);
+          const parts = response.split("-");
+
+          if (parts[2] === "si") {
+            borrarPrueba(id_prueba, correo_creador, (err, results) => {
+              if (err) {
+                reject(err);
+              } else {
+                if (results === "borrado") {
+                  console.log("La prueba se eliminó correctamente");
+                  resolve("si");
+                } else if (results === "noencontrado") {
+                  console.log("La prueba no se encontró o no se pudo eliminar");
+                  resolve("no");
+                }
+              }
+            });
+          }
+        });
+      });
+    });
+
+    conn.on("error", (err) => {
+      reject(err);
+    });
+
+    conn.on("end", () => {
+      console.log("Conexión SSH cerrada");
+    });
+  });
+}
+
 module.exports = {
   clienteprueba,
-  clienteverprueba
-}
+  clienteverprueba,
+  clienteborrarprueba,
+};

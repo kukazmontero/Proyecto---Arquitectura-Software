@@ -141,6 +141,24 @@ app.get('/ver_pruebas', async (req, res) => {
   }
 });
 
+app.post('/borrarprueba', async (req, res) => {
+  const { id_prueba, correo } = req.body;
+  if (req.session.loggedIn) {
+    try {
+      const respuesta = await clienteborrarprueba(id_prueba, correo);
+      console.log(respuesta);
+      res.render('borrar-pruebas', { respuesta: id_prueba, correo: correo });
+    } catch (error) {
+      console.error(error);
+      res.send("Error en la conexión SSH");
+    }
+  } else {
+    res.redirect('/');
+  }
+});
+
+
+
 app.get('/cerrar_sesion', (req, res) => {
   req.session.destroy();
   res.redirect('/');

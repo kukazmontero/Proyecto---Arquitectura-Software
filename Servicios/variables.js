@@ -8,6 +8,7 @@ const login = `logn${letra}`;
 const datos = `dats${letra}`;
 const prueb = `prub${letra}`;
 const vprue = `vpre${letra}`;
+const dprue = `dpre${letra}`;
 
 const sshConfig = {
   host: '200.14.84.16',
@@ -29,6 +30,7 @@ module.exports = {
   datos, 
   prueb,
   vprue,
+  dprue,
   contarcaracteres,
   sshConfig
 };

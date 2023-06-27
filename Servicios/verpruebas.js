@@ -19,9 +19,9 @@ conn.on('ready', () => {
         console.log('Datos recibidos:', response);
         const parts = response.split('-');
 
-        if(parts[0] ===`${vprue}`){
+        if(parts[0] ===`${vprue}`){ //para ver desde doonde viene el mensaje (viene del cliente)
           if (response.trim() !== '' &&parts[1]) {
-          
+           //[vprue]-[correo]-[rol]
             servicio = `${datos}`;
             console.log(`rol: ${parts[1]}`)
             nuevaconsulta =`${servicio}-${vprue}-${parts[1]}`;
@@ -30,7 +30,7 @@ conn.on('ready', () => {
             stream.write(messagefinal);
           }
         }
-        else{
+        else{ //viene desde la base de datos
             if(parts[2]==="si"){
                 let message = `${vprue}-`+parts.slice(1).join('-');
                 let messagef = contarcaracteres(message);

@@ -40,7 +40,7 @@
       <% if (rol === '1' || rol === '2') { %>
         <a href="/agregarpregunta" class="button button1">Agregar Pregunta</a>
         <a href="/modificarprueba" class="button button1">Modificar Prueba</a>
-        <a href="/borrarprueba" class="button button1">Borrar Prueba</a>
+        <a href="/borrarprueba" class="button button1" onclick="borrarPrueba(event, '<%= prueba.id_prueba %>', '<%= prueba.correo_creador %>')">Borrar Prueba</a>
       <% } %>
 
       <% if (rol === '3') { %>
