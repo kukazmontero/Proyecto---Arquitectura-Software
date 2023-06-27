@@ -24,8 +24,8 @@ conn.on('ready', () => {
         if(parts[0] ===`${dprue}`){
           if (response.trim() !== '' && parts[1]) {
             servicio = `${datos}`;
-            console.log(`ROWID: ${parts[2]}`, `correo_creador: ${parts[3]}`)
-            nuevaconsulta =`${servicio}-${dprue}-${parts[2]}-${parts[3]}`;
+            console.log(`ROWID: ${parts[1]}`, `correo_creador: ${parts[2]}`)
+            nuevaconsulta =`${servicio}-${dprue}-${parts[1]}-${parts[2]}`;
             messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
             stream.write(messagefinal);

@@ -1,7 +1,6 @@
 const { Client } = require("ssh2");
 const { dprue, vprue, prueb, sshConfig } = require("../Servicios/variables.js");
 
-import { borrarPrueba } from '../Servicios/bbdd.js';
 
 function clienteprueba(nombreprueba, asignatura, correo_creador, num_preg) {
   return new Promise((resolve, reject) => {
@@ -124,17 +123,15 @@ function clienteverprueba(rol) {
 function clienteborrarprueba(id_prueba, correo_creador) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
-    conn.on("ready", () => {
-      console.log("Conexión SSH establecida");
 
-      conn.exec("telnet localhost 5000", (err, stream) => {
+    conn.on('ready', () => {
+      console.log('Conexión SSH establecida');
+
+      conn.exec('telnet localhost 5000', (err, stream) => {
         if (err) {
-          console.log("ENTRO")
           reject(err);
           return;
         }
-
-        console.log("WENAZO")
 
         service = `${dprue}`;
         const message = `${service}-${id_prueba}-${correo_creador}`;
@@ -150,32 +147,26 @@ function clienteborrarprueba(id_prueba, correo_creador) {
           const parts = response.split("-");
 
           if (parts[2] === "si") {
-            borrarPrueba(id_prueba, correo_creador, (err, results) => {
-              if (err) {
-                reject(err);
-              } else {
-                if (results === "borrado") {
-                  console.log("La prueba se eliminó correctamente");
-                  resolve("si");
-                } else if (results === "noencontrado") {
-                  console.log("La prueba no se encontró o no se pudo eliminar");
-                  resolve("no");
-                }
-              }
-            });
+            resolve("Si")
+          }
+          else if (parts[2] === "no"){
+            resolve("No")
           }
         });
       });
     });
 
-    conn.on("error", (err) => {
+    conn.on('error', (err) => {
       reject(err);
     });
 
-    conn.on("end", () => {
-      console.log("Conexión SSH cerrada");
+    conn.on('end', () => {
+      console.log('Conexión SSH cerrada');
     });
+
+    conn.connect(sshConfig);
   });
+
 }
 
 module.exports = {

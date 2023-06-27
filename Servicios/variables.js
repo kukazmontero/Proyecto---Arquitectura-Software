@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('mydatabase.db');
 
-let letra = "t"
+let letra = "h"
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
 const datos = `dats${letra}`;

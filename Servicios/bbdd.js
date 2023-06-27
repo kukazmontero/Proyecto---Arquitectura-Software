@@ -125,6 +125,7 @@ conn.on("ready", () => {
             else if(results === "noborrado"){
               stream.write(`00017${datos}-borrado-no`);
             }
+            console.log(results)
           }
         })
       }
@@ -302,7 +303,7 @@ function borrarPrueba(id, correo_creador, callback) {
   const query =
     "DELETE FROM tabla_pruebas WHERE ROWID = ? AND correo_creador = ?";
 
-  db.run(query, id, correo_creador, function (err) {
+  db.run(query, [id, correo_creador], function (err) {
     if (err) {
       callback(err);
     } else {
