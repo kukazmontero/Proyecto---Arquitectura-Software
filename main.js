@@ -1,48 +1,34 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const port = 3000;
-const session = require("express-session");
-const path = require("path");
+const session = require('express-session');
+const path = require('path');
 
 app.use(express.urlencoded({ extended: true }));
-<<<<<<< HEAD
-app.use(express.static("public"));
-
-const clientelogin = require("./Clientes/cliente-login");
-const clienteregistro = require("./Clientes/cliente-registro");
-const {
-  clienteprueba,
-  clienteverprueba,
-  clienteborrarprueba,
-  clienteeditarprueba,
-} = require("./Clientes/cliente-prueba.js");
-=======
 app.use(express.static('public'));
 
 const {clientelogin, clienteverusuario} = require('./Clientes/cliente-login');
 const clienteregistro = require('./Clientes/cliente-registro');
-const { clienteprueba, clienteverprueba, clienteborrarprueba } = require('./Clientes/cliente-prueba.js');
->>>>>>> 21ee356231265461e7552b4ab650684d155b3aec
+const { clienteprueba, clienteverprueba, clienteborrarprueba, clienteeditarprueba } = require('./Clientes/cliente-prueba.js');
 //const { clienteverprueba } = require('./Servicios/auxxx');
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
-app.use(
-  session({
-    secret: "key",
-    resave: false,
-    saveUninitialized: true,
-  })
-);
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(session({
+  secret: 'key',
+  resave: false,
+  saveUninitialized: true
+}));
 
 // Ruta para el formulario HTML
-app.get("/", (req, res) => {
-  res.render("login");
+app.get('/', (req, res) => {
+  res.render('login');
 });
 
 // Ruta para procesar el formulario enviado por POST
-app.post("/formulario", async (req, res) => {
+app.post('/formulario', async (req, res) => {
   const { password, correo } = req.body;
 
   try {
@@ -55,10 +41,10 @@ app.post("/formulario", async (req, res) => {
       req.session.nombre = respuesta.nombre;
       req.session.contraseña = respuesta.contraseña;
       req.session.rol = respuesta.rol;
-
+  
       // Realizar las acciones correspondientes con los datos del usuario
-
-      res.redirect("/home");
+  
+      res.redirect('/home');
     } else if (respuesta.resultado === "mal") {
       res.send("La contraseña es incorrecta");
     } else if (respuesta.resultado === "no") {
@@ -70,20 +56,15 @@ app.post("/formulario", async (req, res) => {
   }
 });
 
-app.post("/formprueba", async (req, res) => {
+app.post('/formprueba', async (req, res) => {
   const { nombreprueba, asignatura, num_preg } = req.body;
   let correo_creador = req.session.correo;
   try {
-    const respuesta = await clienteprueba(
-      nombreprueba,
-      asignatura,
-      correo_creador,
-      num_preg
-    );
+    const respuesta = await clienteprueba(nombreprueba, asignatura, correo_creador, num_preg);
     console.log(respuesta);
 
     if (respuesta === "si") {
-      res.redirect("ver_pruebas");
+      res.redirect('ver_pruebas');
     } else if (respuesta === "no") {
       res.render("home");
     }
@@ -93,16 +74,16 @@ app.post("/formprueba", async (req, res) => {
   }
 });
 
-app.post("/registrousuario", async (req, res) => {
+
+app.post('/registrousuario', async (req, res) => {
   const { nombre, correo, password, rol } = req.body;
 
   try {
-    const respuesta = await clienteregistro(nombre, correo, password, rol);
+    const respuesta = await clienteregistro(nombre, correo , password, rol);
     console.log(respuesta);
 
     if (respuesta === "si") {
-      res.render("registrar_usuario");
-      res.redirect("/");
+      res.render('registrar_usuario');
     } else if (respuesta === "no") {
       res.render("home");
     }
@@ -113,65 +94,89 @@ app.post("/registrousuario", async (req, res) => {
 });
 
 // Ruta para las opciones después del inicio de sesión
-app.get("/home", (req, res) => {
+app.get('/home', (req, res) => {
   if (req.session.loggedIn) {
     const { nombre, correo, contraseña, rol } = req.session;
 
-    res.render("home", { nombre, correo, contraseña, rol });
+    res.render('home', { nombre, correo, contraseña, rol });
   } else {
-    res.redirect("/");
+    res.redirect('/');
   }
 });
 // Rutas para cada opción
-app.get("/registrarusuario", (req, res) => {
+app.get('/registrarusuario', (req, res) => {
   if (req.session.loggedIn) {
-    res.render("registrar_usuario");
+    res.render('registrar_usuario');
   } else {
-    res.redirect("/");
+    res.redirect('/');
   }
 });
 
-app.get("/crearprueba", (req, res) => {
+app.get('/crearprueba', (req, res) => {
   if (req.session.loggedIn) {
     const { nombre, correo, contraseña, rol } = req.session;
 
-    res.render("crearprueba", { nombre, correo, contraseña, rol });
+    res.render('crearprueba', { nombre, correo, contraseña, rol });
   } else {
-    res.redirect("/");
+    res.redirect('/');
   }
 });
 
-app.get("/ver_pruebas", async (req, res) => {
+app.get('/ver_pruebas', async (req, res) => {
   if (req.session.loggedIn) {
-    let rol = req.session.rol;
-    try {
-      const respuesta = await clienteverprueba(rol);
-      console.log(respuesta);
-      res.render("ver-pruebas", { respuesta: respuesta, rol: rol });
-    } catch (error) {
-      console.error(error);
-      res.send("Error en la conexión SSH");
-    }
+  let rol = req.session.rol;
+  try {
+    const respuesta = await clienteverprueba(rol);
+    console.log(respuesta);
+    res.render('ver-pruebas', { respuesta: respuesta, rol: rol });
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+  
+    
   } else {
-    res.redirect("/");
+    res.redirect('/');
   }
 });
 
-app.post("/borrarprueba", async (req, res) => {
+app.post('/borrarprueba', async (req, res) => {
   const id_prueba = req.body.id;
-  correo = req.session.correo;
+  correo = req.session.correo
 
   if (req.session.loggedIn) {
+ 
     try {
       const respuesta = await clienteborrarprueba(id_prueba, correo);
       console.log(respuesta);
-      res.redirect("ver_pruebas");
+      res.redirect('ver_pruebas');
+
     } catch (error) {
       console.error(error);
       res.send("Error en la conexión SSH");
     }
   } else {
-    res.redirect("/");
+    res.redirect('/');
+  }
+});
+
+app.get('/ver_usuarios', async (req, res) => {
+  if (req.session.loggedIn) {
+  let rol = req.session.rol;
+  try {
+    const respuesta = await clienteverusuario(rol);
+    console.log(respuesta);
+    res.render('ver_usuarios', { respuesta: respuesta, rol: rol });
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+  
+    
+  } else {
+    res.redirect('/');
   }
 });
 
@@ -186,7 +191,7 @@ app.post("/modificarprueba", async (req, res) => {
 
   if (req.session.loggedIn) {
     try {
-      res.render("editarprueba", { id_prueba: id_prueba });
+      res.redirect("ver_pruebas", { id_prueba: id_prueba });
     } catch (error) {
       console.error(error);
       res.send("Error en la conexión SSH");
@@ -222,10 +227,13 @@ app.post("/formedit", async (req, res) => {
 });
 
 
-app.get("/cerrar_sesion", (req, res) => {
+
+app.get('/cerrar_sesion', (req, res) => {
   req.session.destroy();
-  res.redirect("/");
+  res.redirect('/');
 });
+
+
 
 // Iniciar el servidor
 app.listen(port, () => {

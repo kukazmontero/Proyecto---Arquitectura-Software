@@ -1,0 +1,52 @@
+<!-- ver-pruebas.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ver Usuarios</title>
+</head>
+<body>
+
+
+<h1>Lista de Usuarios</h1>
+
+<style>
+  .button {
+      border: none;
+      color: rgb(0, 0, 0);
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    
+  .button1 {background-color: #ffffff; border: 2px solid #000000;}
+  .borde {border: 2px solid #000000;}
+  </style>
+
+
+
+
+<% if (respuesta.length > 0) { %>
+  <% respuesta.forEach(function(user) { %>
+    <div class="borde">
+      <p>Nombre del Usuario: <%= user.usuario %></p>
+      <p>Rol: <%= user.rol %></p>
+      <p>Correo: <%= user.correo %></p>
+
+      <% if (rol === '1' || rol === '2') { %>
+        <a href="/" class="button button1">Borrar Usuario</a>
+        <a href="/" class="button button1">Modificar Usuario</a>
+      <% } %>
+      
+
+    </div>
+  <% }); %>
+<% } else { %>
+  <p>No hay pruebas disponibles</p>
+<% } %>
+
+</body>

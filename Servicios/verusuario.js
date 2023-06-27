@@ -2,7 +2,7 @@ const { Client } = require('ssh2');
 
 const conn = new Client();
 
-const { eprue, datos, sshConfig, contarcaracteres } = require('./variables.js');
+const { vusri, datos, sshConfig, contarcaracteres } = require('./variables.js');
 
 
 conn.on('ready', () => {
@@ -14,18 +14,17 @@ conn.on('ready', () => {
         console.log('Conexión al bus de servicio cerrada');
         conn.end();
       }).on('data', (data) => {
-
-
+        
         const response = data.toString().substring(5); 
         console.log('Datos recibidos:', response);
         const parts = response.split('-');
 
-
-        if(parts[0] ===`${eprue}`){
-          if (response.trim() !== '' && parts[1]) {
+        if(parts[0] ===`${vusri}`){
+          if (response.trim() !== '' &&parts[1]) {
+          
             servicio = `${datos}`;
-            console.log(`ROWID: ${parts[1]}`, `nombreprueba: ${parts[2]}`, `asignatura: ${parts[3]}`, `correo_creador: ${parts[4]}`, `num_preguntas: ${parts[5]}`)
-            nuevaconsulta =`${servicio}-${eprue}-${parts[1]}-${parts[2]}-${parts[3]}-${parts[4]}-${parts[5]}`;
+            console.log(`rol: ${parts[1]}`)
+            nuevaconsulta =`${servicio}-${vusri}-${parts[1]}`;
             messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
             stream.write(messagefinal);
@@ -33,13 +32,13 @@ conn.on('ready', () => {
         }
         else{
             if(parts[2]==="si"){
-                let message = `${eprue}-`+parts.slice(1).join('-');
+                let message = `${vusri}-`+parts.slice(1).join('-');
                 let messagef = contarcaracteres(message);
                 console.log(`Mensaje final: ${messagef}`)
                 stream.write(messagef)
               }
               else if(parts[2]==="no"){
-                let message = `${eprue}-`+parts.slice(1).join('-');
+                let message = `${vusri}-`+parts.slice(1).join('-');
                 let messagef = contarcaracteres(message);
                 console.log(`Mensaje final: ${messagef}`)
                 stream.write(messagef)
@@ -47,7 +46,7 @@ conn.on('ready', () => {
         }
       });
 
-      const command = `00010sinit${eprue}`;
+      const command = `00010sinit${vusri}`;
       stream.write(command);
     });  
 
