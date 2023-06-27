@@ -2,21 +2,32 @@ const sqlite3 = require('sqlite3').verbose();
 
 const db = new sqlite3.Database('mydatabase.db');
 
-let letra = "c"
+function randomizarCaracter() {
+  var caracteres = "abcdefghijklmnopqrstuvwxyz0123456789";
+  var indice = Math.floor(Math.random() * caracteres.length);
+  var letra = caracteres.charAt(indice);
+  return letra;
+}
+
+var letra = "j";
+
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
 const datos = `dats${letra}`;
 const prueb = `prub${letra}`;
 const vprue = `vpre${letra}`;
 const dprue = `dpre${letra}`;
+const apreg = `aprg${letra}`;
+const vpreg = `vprg${letra}`;
+const bpreg = `bprg${letra}`;
 const vusri = `vusr${letra}`;
-const eprue = `epre${letra}`;
+const eprue = `epre${letra}`
 
 const sshConfig = {
   host: '200.14.84.16',
   port: 8080,
-  username: 'lukas.montero',
-  password: 'lukas12344321'
+  username: 'gabriel.gonzalez1',
+  password: 'gabriel20781'
 };
 
 function contarcaracteres(message2){
@@ -33,6 +44,9 @@ module.exports = {
   prueb,
   vprue,
   dprue,
+  apreg,
+  vpreg,
+  bpreg,
   vusri,
   eprue,
   contarcaracteres,

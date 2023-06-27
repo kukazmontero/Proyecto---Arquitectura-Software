@@ -13,9 +13,13 @@ const {
   prueb,
   vprue,
   dprue,
-  eprue,
-  vusri,
   sshConfig,
+  apreg,
+  vpreg,
+  bpreg,
+  vusri,
+  eprue,
+  contarcaracteres
 } = require("./variables.js");
 const { EMPTY } = require("sqlite3");
 
@@ -71,6 +75,36 @@ conn.on("ready", () => {
               messagefinal = largo2 + message;
               console.log(`Mensaje enviado: ${messagefinal}`);
               stream.write(messagefinal);
+            }
+          }
+        });
+      } else if (parts[1] === vusri) {
+        console.log("ENTRO");
+        verUsuario(parts[2], (err, results) => {
+          if (err) {
+            console.log(err);
+          } else {
+            if (results === "noencontrado") {
+              service = `${datos}`; 
+              const message2 = `${service}-verusuario-no`;
+              const largo = message2.length;
+              const largo2 = largo.toString().padStart(5, '0');
+              messagefinal = largo2 + message2;
+              console.log(`Mensaje enviado: ${messagefinal}`);
+              stream.write(messagefinal);
+            } else {
+                const message = results.reduce((acc, user) => {
+                const {usuario, contraseña, rol, correo } = user;
+                const resultado = `-[${usuario},${contraseña},${rol},${correo}]`;
+                return acc + resultado;
+              }, '');
+              service = `${datos}`; 
+              const message2 = `${service}-verusuario-si${message}`;
+              const largo = message2.length;
+              const largo2 = largo.toString().padStart(5, '0');
+              messagefinal = largo2 + message2;
+              console.log(`Mensaje enviado: ${messagefinal}`);
+              stream.write(messagefinal);          
             }
           }
         });
@@ -130,36 +164,6 @@ conn.on("ready", () => {
             console.log(results)
           }
         })
-      } else if (parts[1] === vusri) {
-        console.log(parts[2]);
-        verUsuario(parts[2], (err, results) => {
-          if (err) {
-            console.log(err);
-          } else {
-            if (results === "noencontrado") {
-              service = `${datos}`; 
-              const message2 = `${service}-verusuario-no`;
-              const largo = message2.length;
-              const largo2 = largo.toString().padStart(5, '0');
-              messagefinal = largo2 + message2;
-              console.log(`Mensaje enviado: ${messagefinal}`);
-              stream.write(messagefinal);
-            } else {
-                const message = results.reduce((acc, user) => {
-                const {usuario, contraseña, rol, correo } = user;
-                const resultado = `-[${usuario},${contraseña},${rol},${correo}]`;
-                return acc + resultado;
-              }, '');
-              service = `${datos}`; 
-              const message2 = `${service}-verusuario-si${message}`;
-              const largo = message2.length;
-              const largo2 = largo.toString().padStart(5, '0');
-              messagefinal = largo2 + message2;
-              console.log(`Mensaje enviado: ${messagefinal}`);
-              stream.write(messagefinal);          
-            }
-          }
-        });
       } else if (parts[1] === eprue) {
         editarPrueba(parts[2], parts[3], parts[4], parts[5], parts[6], (err, results) =>{
           if(err){
@@ -174,7 +178,61 @@ conn.on("ready", () => {
             console.log(results)
           }
         })
+      } else if (parts[1] === apreg) {
+        crearpregunta(parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9], function(respuesta) {
+          if (respuesta === "agregado") {
+            console.log("Se agregó");
+            stream.write(`00017${datos}-agregado-si`);
+          } else if (respuesta === "noagregado") {
+            console.log("No se agregó");
+            stream.write(`00017${datos}-agregado-no`);
+          }        
+        });
+      } else if (parts[1] === vpreg) {
+        verpreguntas(parts[2], (err, preguntas) => {
+          if (err) {
+            console.log(err);
+          } else {
+            if (preguntas === "noencontrado") {
+              service = `${datos}`;
+              const message2 = `${service}-verpreg-no`;
+              const largo = message2.length;
+              const largo2 = largo.toString().padStart(5, '0');
+              messagefinal = largo2 + message2;
+              console.log(`Mensaje enviado: ${messagefinal}`);
+              stream.write(messagefinal);
+            } else {
+                const message = preguntas.reduce((acc, pregunta) => {
+                  const { ROWID, enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba } = pregunta;
+                  const resultado = `-[${ROWID},${enunciado},${OpcionA},${OpcionB},${OpcionC},${OpcionD},${OpcionE},${OpcionCorrecta},${id_prueba}]`;
+                  return acc + resultado;
+                }, '');
+                service = `${datos}`;
+                const message2 = `${service}-verpreg-si${message}`;
+                const largo = message2.length;
+                const largo2 = largo.toString().padStart(5, '0');
+                messagefinal = largo2 + message2;
+                console.log(`Mensaje enviado: ${messagefinal}`);
+                stream.write(messagefinal);
+            }
+          }
+        });
+      } else if (parts[1] === bpreg) {
+        borrarpregunta(parts[2], parts[3], (err, results) =>{
+          if(err){
+            console.log(err);
+          } else{
+            if(results === "eliminada"){
+              stream.write(`00017${datos}-borrado-si`);
+            }
+            else if(results === "noeliminada"){
+              stream.write(`00017${datos}-borrado-no`);
+            }
+            console.log(results)
+          }
+        })
       }
+      
     });
     const command = `00010sinit${datos}`;
     console.log(stream.write(command));
@@ -273,11 +331,12 @@ function crearprueba(
         console.error(err);
         callback(null, "noagregado");
       } else {
+        callback(null, "agregado");
         console.log(`Prueba de ${asignatura} insertada correctamente.`);
       }
     }
   );
-  callback(null, "agregado");
+  
 }
 function verPrueba( rol, callback) {
   const query = `SELECT ROWID, * FROM tabla_pruebas`;
@@ -346,22 +405,29 @@ function verPrueba( rol, callback) {
   }
 }
 function borrarPrueba(id, correo_creador, callback) {
-  const query =
-    "DELETE FROM tabla_pruebas WHERE ROWID = ? AND correo_creador = ?";
+  const query = "DELETE FROM tabla_pruebas WHERE ROWID = ? AND correo_creador = ?";
+  const deletePreguntasQuery = "DELETE FROM tabla_preguntas WHERE id_prueba = ?";
 
-  db.run(query, [id, correo_creador], function (err) {
+  // Eliminar todas las preguntas asociadas a la prueba
+  db.run(deletePreguntasQuery, [id], function (err) {
     if (err) {
       callback(err);
     } else {
-      if (this.changes > 0) {
-        callback(null, "borrado");
-      } else {
-        callback(null, "noencontrado");
-      }
+      // Continuar con la eliminación de la prueba
+      db.run(query, [id, correo_creador], function (err) {
+        if (err) {
+          callback(err);
+        } else {
+          if (this.changes > 0) {
+            callback(null, "borrado");
+          } else {
+            callback(null, "noencontrado");
+          }
+        }
+      });
     }
   });
 }
-
 function verUsuario( rol, callback) {
   const query = `SELECT * FROM tabla_usuarios`;
   /*console.log(rol)
@@ -395,7 +461,6 @@ function verUsuario( rol, callback) {
     callback(null, "noencontrado");
   }
 }
-
 function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_preguntas, callback) {
   const query =
   "UPDATE tabla_pruebas SET nombreprueba = ?, asignatura = ?, num_preguntas = ?  WHERE ROWID = ? AND  correo_creador = ?";
@@ -412,8 +477,170 @@ function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_pregunta
     }
   });
 }
+function crearpregunta(enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba, callback) {
+  const countQuery = "SELECT cant_preg, num_preguntas FROM tabla_pruebas WHERE ROWID = ?";
+  db.get(countQuery, [id_prueba], function(err, row) {
+    if (err) {
+      console.log('Error al obtener la cantidad de preguntas:', err);
+      callback('noagregado');
+    } else {
+      if (row && row.cant_preg !== undefined && row.num_preguntas !== undefined) {
+
+        
+        const cantidadPreguntas = row.cant_preg;
+        const limitePreguntas = row.num_preguntas;
+
+        if (cantidadPreguntas >= limitePreguntas) {
+          console.log('Se ha alcanzado el límite de preguntas para esta prueba.');
+          callback('noagregado');
+        }else{
+          const query = "INSERT INTO tabla_preguntas (enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+          // Ejecutar la consulta para insertar los datos en la tabla
+          db.run(query, [enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba], function(err) {
+            if (err) {
+              console.log('Error al insertar la pregunta:', err);
+              callback('noagregado'); // Pasar 'noagregado' al callback en caso de error
+            } else {
+              console.log('La pregunta ha sido agregada correctamente.');
+                  const countQuery = "SELECT COUNT(*) AS cantidad FROM tabla_preguntas WHERE id_prueba = ?";
+
+                  // Ejecutar la consulta para obtener la cantidad de preguntas
+                  db.get(countQuery, [id_prueba], function(err, row) {
+                    if (err) {
+                      console.log('Error al contar las preguntas:', err);
+                    } else {
+                      const cantidadPreguntas = row.cantidad;
+                      console.log(cantidadPreguntas)
+
+                      // Consulta para actualizar la cantidad de preguntas en la tabla de pruebas
+                      const updateQuery = "UPDATE tabla_pruebas SET cant_preg = ? WHERE ROWID = ?";
+
+                      // Ejecutar la consulta de actualización
+                      db.run(updateQuery, [cantidadPreguntas, id_prueba], function(err) {
+                        if (err) {
+                          console.log('Error al actualizar la cantidad de preguntas:', err);
+                        } else {
+                          console.log('Cantidad de preguntas actualizada correctamente.');
+                          callback('agregado'); // Pasar 'agregado' al callback si se agrega correctamente
+                        }
+                      });
+                    }
+                  });
+              
+            }
+          });
+
+        }
+    
+      }
+      
+    }
 
 
-module.exports = {
-  borrarPrueba
-};
+  });
+
+
+}
+function borrarpregunta(id_pregunta,id_prueba, callback) {
+  const countQuery = "SELECT cant_preg, num_preguntas FROM tabla_pruebas WHERE ROWID = ?";
+  db.get(countQuery, [id_prueba], function(err, row) {
+    if (err) {
+      console.log('Error al obtener la cantidad de preguntas:', err);
+      callback('noagregado');
+    } else {
+      if (row && row.cant_preg !== undefined && row.num_preguntas !== undefined) {
+
+        
+        const cantidadPreguntas = row.cant_preg;
+        const limitePreguntas = row.num_preguntas;
+
+          const query = "DELETE FROM tabla_preguntas WHERE ROWID = ?";
+
+          // Ejecutar la consulta para insertar los datos en la tabla
+          db.run(query, [id_pregunta], function(err) {
+            if (err) {
+              console.log('Error al eliminar la pregunta:', err);
+              callback('noeliminada'); // Pasar 'noagregado' al callback en caso de error
+            } else {
+              console.log('La pregunta ha sido eliminada correctamente.');
+                  const countQuery = "SELECT COUNT(*) AS cantidad FROM tabla_preguntas WHERE id_prueba = ?";
+
+                  // Ejecutar la consulta para obtener la cantidad de preguntas
+                  db.get(countQuery, [id_prueba], function(err, row) {
+                    if (err) {
+                      console.log('Error al contar las preguntas:', err);
+                    } else {
+                      const cantidadPreguntas = row.cantidad;
+                      console.log(cantidadPreguntas)
+
+                      // Consulta para actualizar la cantidad de preguntas en la tabla de pruebas
+                      const updateQuery = "UPDATE tabla_pruebas SET cant_preg = ? WHERE ROWID = ?";
+
+                      // Ejecutar la consulta de actualización
+                      db.run(updateQuery, [cantidadPreguntas, id_prueba], function(err) {
+                        if (err) {
+                          console.log('Error al actualizar la cantidad de preguntas:', err);
+                        } else {
+                          console.log('Cantidad de preguntas actualizada correctamente.');
+                          callback('eliminada'); // Pasar 'agregado' al callback si se agrega correctamente
+                        }
+                      });
+                    }
+                  });
+              
+            }
+          });
+
+       
+    
+      }
+      
+    }
+
+
+  });
+
+
+}
+function verpreguntas(id_prueba, callback) {
+  const query = "SELECT ROWID, * FROM tabla_preguntas WHERE id_prueba = ?";
+
+  const countQuery = "SELECT cant_preg, num_preguntas FROM tabla_pruebas WHERE ROWID = ?";
+
+  db.get(countQuery, [id_prueba], function(err, row) {
+    if (err) {
+      callback(err);
+    } else {
+        db.all(query, [id_prueba], function(err, results) {
+          if (err) {
+            callback(err);
+          } else {
+            if (results.length === 0) {
+              console.log("Prueba no encontrada");
+              callback(null, "noencontrado");
+            } else {
+              const preguntas = results.map((pregunta) => {
+                const { ROWID, enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba } = pregunta;
+                return {
+                  ROWID,
+                  enunciado,
+                  OpcionA,
+                  OpcionB,
+                  OpcionC,
+                  OpcionD,
+                  OpcionE,
+                  OpcionCorrecta,
+                  id_prueba
+                };
+              });
+              callback(null, preguntas);
+            }
+          }
+        });
+       
+    }
+  });
+}
+
+

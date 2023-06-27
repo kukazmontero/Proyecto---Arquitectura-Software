@@ -10,6 +10,8 @@ app.use(express.static('public'));
 const {clientelogin, clienteverusuario} = require('./Clientes/cliente-login');
 const clienteregistro = require('./Clientes/cliente-registro');
 const { clienteprueba, clienteverprueba, clienteborrarprueba, clienteeditarprueba } = require('./Clientes/cliente-prueba.js');
+const {clientepregunta , clienteverpregunta, clienteborrarpregunta} = require('./Clientes/cliente-pregunta');
+
 //const { clienteverprueba } = require('./Servicios/auxxx');
 
 
@@ -66,7 +68,23 @@ app.post('/formprueba', async (req, res) => {
     if (respuesta === "si") {
       res.redirect('ver_pruebas');
     } else if (respuesta === "no") {
-      res.render("home");
+      res.redirect("home");
+    }
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+});
+app.post('/formpregunta', async (req, res) => {
+  const { enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba} = req.body;
+  try {
+    const respuesta = await clientepregunta(enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba);
+    console.log(respuesta);
+
+    if (respuesta === "si") {
+      res.redirect('ver_pruebas');
+    } else if (respuesta === "no") {
+      res.redirect("home");
     }
   } catch (error) {
     console.error(error);
@@ -92,7 +110,24 @@ app.post('/registrousuario', async (req, res) => {
     res.send("Error en la conexión SSH");
   }
 });
+app.get('/ver_usuarios', async (req, res) => {
+  if (req.session.loggedIn) {
+  let rol = req.session.rol;
+  try {
+    const respuesta = await clienteverusuario(rol);
+    console.log(respuesta);
+    res.render('ver_usuarios', { respuesta: respuesta, rol: rol });
 
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+  
+    
+  } else {
+    res.redirect('/');
+  }
+});
 // Ruta para las opciones después del inicio de sesión
 app.get('/home', (req, res) => {
   if (req.session.loggedIn) {
@@ -140,46 +175,6 @@ app.get('/ver_pruebas', async (req, res) => {
     res.redirect('/');
   }
 });
-
-app.post('/borrarprueba', async (req, res) => {
-  const id_prueba = req.body.id;
-  correo = req.session.correo
-
-  if (req.session.loggedIn) {
- 
-    try {
-      const respuesta = await clienteborrarprueba(id_prueba, correo);
-      console.log(respuesta);
-      res.redirect('ver_pruebas');
-
-    } catch (error) {
-      console.error(error);
-      res.send("Error en la conexión SSH");
-    }
-  } else {
-    res.redirect('/');
-  }
-});
-
-app.get('/ver_usuarios', async (req, res) => {
-  if (req.session.loggedIn) {
-  let rol = req.session.rol;
-  try {
-    const respuesta = await clienteverusuario(rol);
-    console.log(respuesta);
-    res.render('ver_usuarios', { respuesta: respuesta, rol: rol });
-
-  } catch (error) {
-    console.error(error);
-    res.send("Error en la conexión SSH");
-  }
-  
-    
-  } else {
-    res.redirect('/');
-  }
-});
-
 app.post("/modificarprueba", async (req, res) => {
   const id_prueba = req.body.id;
   const nombreprueba = req.body.nombreprueba;
@@ -215,18 +210,95 @@ app.post("/formedit", async (req, res) => {
     );
     console.log(respuesta);
 
-    if (respuesta === "si") {
       res.redirect("ver_pruebas");
-    } else if (respuesta === "no") {
-      res.render("home");
-    }
+    
   } catch (error) {
     console.error(error);
     res.send("Error en la conexión SSH");
   }
 });
 
+app.post('/ver_preguntas', async (req, res) => {
+  if (req.session.loggedIn) {
+    let rol = req.session.rol;
+    const id_prueba = req.body.id;
+    
+    try {
+      const respuesta = await clienteverpregunta(id_prueba);
+      console.log(respuesta);
+      if(parseInt(rol) === 3){
+        res.render('ver-preguntas', { respuesta: respuesta, rol: rol});
+      } else {
+        res.render('ver-preguntas', { respuesta: respuesta, rol: rol});
+      }
+        
+    } catch (error) {
+      console.error(error);
+      res.send("Error en la conexión SSH");
+    }
+  
+    
+  } else {
+    res.redirect('/');
+  }
+});
+app.post('/borrarprueba', async (req, res) => {
+  const id_prueba = req.body.id;
+  correo = req.session.correo
 
+  if (req.session.loggedIn) {
+ 
+    try {
+      const respuesta = await clienteborrarprueba(id_prueba, correo);
+      console.log(respuesta);
+      res.redirect('ver_pruebas');
+
+    } catch (error) {
+      console.error(error);
+      res.send("Error en la conexión SSH");
+    }
+  } else {
+    res.redirect('/');
+  }
+});
+app.post('/borrarpregunta', async (req, res) => {
+  const id_pregunta = req.body.id;
+  const id_prueba = req.body.id_prueba;
+  console.log(id_pregunta, '   ',id_prueba )
+
+
+  if (req.session.loggedIn) {
+ 
+    try {
+      const respuesta = await clienteborrarpregunta(id_pregunta, id_prueba);
+      console.log(respuesta);
+      res.redirect('ver_preguntas');
+
+    } catch (error) {
+      console.error(error);
+      res.send("Error en la conexión SSH");
+    }
+  } else {
+    res.redirect('/');
+  }
+});
+app.post('/agregarpregunta', async (req, res) => {
+  const id_prueba = req.body.id;
+  rol = req.session.rol;
+  parseInt(rol)
+
+  if (req.session.loggedIn && rol != 3) {
+    try {
+      res.render('agregarpregunta', { id_prueba });
+
+    } catch (error) {
+      console.error(error);
+      res.send("Error en la conexión SSH");
+    }
+  } else {
+    res.send("Usuario no Permitido");
+  }
+});
 
 app.get('/cerrar_sesion', (req, res) => {
   req.session.destroy();

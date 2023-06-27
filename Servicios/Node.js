@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 // Archivos de servicio a ejecutar
-const servicios = ['bbdd.js', 'registro.js', 'pruebas.js', 'login.js', 'verpruebas.js', 'borrarprueba.js', 'editarprueba.js', 'verusuario.js'];
+const servicios = ['bbdd.js', 'registro.js', 'pruebas.js', 'login.js', 'verpruebas.js', 'borrarprueba.js',  'agregarpreg.js', 'verpreguntas.js', 'borrarpregunta.js', 'editarprueba.js', 'verusuario.js'];
 
 servicios.forEach((servicio) => {
   const nombreServicio = path.basename(servicio, '.js'); // Obtener el nombre del servicio sin la extensión

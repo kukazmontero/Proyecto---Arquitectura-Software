@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Agregar Pregunta</title>
+  <style>
+    textarea, select {
+      width: 600px;
+      height: 50px;
+      padding: 20px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Agregar Pregunta</h1>
+
+  <form action="/formpregunta" method="POST">
+    <label for="enunciado">Enunciado:</label>
+    <textarea id="enunciado" name="enunciado" required></textarea><br><br>
+
+    <label for="OpcionA">Opcion A:</label>
+    <textarea id="OpcionA" name="OpcionA" required></textarea><br><br>
+
+    <label for="OpcionB">Opcion B:</label>
+    <textarea id="OpcionB" name="OpcionB" required></textarea><br><br>
+
+    <label for="OpcionC">Opcion C:</label>
+    <textarea id="OpcionC" name="OpcionC" required></textarea><br><br>
+
+    <label for="OpcionD">Opcion D:</label>
+    <textarea id="OpcionD" name="OpcionD" required></textarea><br><br>
+
+    <label for="OpcionE">Opcion E:</label>
+    <textarea id="OpcionE" name="OpcionE" required></textarea><br><br>
+
+    <label for="OpcionCorrecta">Seleccione la alternativa Correcta</label>
+    <select id="OpcionCorrecta" name="OpcionCorrecta" required>
+      <option value="a">a</option>
+      <option value="b">b</option>
+      <option value="c">c</option>
+      <option value="d">d</option>
+      <option value="e">e</option>
+    </select><br><br>
+
+    
+    <input type="hidden" name="id_prueba" value=<%= id_prueba %>>
+
+    <input type="submit" class="button1" value="Crear">
+  </form>
+</body>
+</html>

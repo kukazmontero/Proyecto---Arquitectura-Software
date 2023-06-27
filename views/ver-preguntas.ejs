@@ -1,0 +1,69 @@
+<!-- ver-pruebas.ejs -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Realizar Prueba</title>
+</head>
+<body>
+
+
+<h1>Lista de Preguntas</h1>
+
+<style>
+  .button {
+      border: none;
+      color: rgb(0, 0, 0);
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    
+  .button1 {background-color: #ffffff; border: 2px solid #000000;}
+  .borde {border: 2px solid #000000;}
+</style>
+
+
+
+
+<% if (respuesta.length > 0) { %>
+  <% respuesta.forEach(function(pregunta) { %>
+    <div class="borde">
+      <p>ID de la pregunta: <%= pregunta.id_pregunta %></p>
+      <p>Enunciado: <%= pregunta.enunciado %></p>
+      <p>Opción A: <%= pregunta.OpcionA %></p>
+      <p>Opción B: <%= pregunta.OpcionB %></p>
+      <p>Opción C: <%= pregunta.OpcionC %></p>
+      <p>Opción D: <%= pregunta.OpcionD %></p>
+      <p>Opción E: <%= pregunta.OpcionE %></p>
+      <p>Opción Correcta: <%= pregunta.OpcionCorrecta %></p>
+      <p>ID de la Prueba: <%= pregunta.id_prueba %></p>
+      
+    <form action="/borrarpregunta" method="POST">
+      
+        <input type="hidden" name="id" value=<%= pregunta.id_pregunta %>>
+        <input type="hidden" name="id_prueba" value=<%= pregunta.id_prueba %>>
+        <button type="submit" class="button button1">
+          Borrar Pregunta
+        </button>
+    </form>
+    <form action="/modificarpregunta" method="POST">
+      
+        <input type="hidden" name="id" value=<%= pregunta.id %>>
+        <button type="submit" class="button button1">
+          Modificar Pregunta
+        </button>
+    </form>
+    </div>
+    
+  <% }); %>
+<% } else { %>
+  <p>No hay preguntas disponibles</p>
+<% } %>
+
+</body>
+</html>

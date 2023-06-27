@@ -1,5 +1,5 @@
 const { Client } = require('ssh2');
-const { regis, login, sshConfig, vusri } = require('../Servicios/variables.js');
+const { vusri, login, sshConfig } = require('../Servicios/variables.js');
 
 function clientelogin(password, correo) {
   return new Promise((resolve, reject) => {
@@ -67,7 +67,6 @@ function clientelogin(password, correo) {
     conn.connect(sshConfig);
   });
 }
-
 function clienteverusuario(rol){
   return new Promise((resolve, reject) => {
     const conn = new Client();
