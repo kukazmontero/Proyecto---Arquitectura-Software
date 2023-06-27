@@ -5,6 +5,7 @@ const session = require("express-session");
 const path = require("path");
 
 app.use(express.urlencoded({ extended: true }));
+<<<<<<< HEAD
 app.use(express.static("public"));
 
 const clientelogin = require("./Clientes/cliente-login");
@@ -15,6 +16,13 @@ const {
   clienteborrarprueba,
   clienteeditarprueba,
 } = require("./Clientes/cliente-prueba.js");
+=======
+app.use(express.static('public'));
+
+const {clientelogin, clienteverusuario} = require('./Clientes/cliente-login');
+const clienteregistro = require('./Clientes/cliente-registro');
+const { clienteprueba, clienteverprueba, clienteborrarprueba } = require('./Clientes/cliente-prueba.js');
+>>>>>>> 21ee356231265461e7552b4ab650684d155b3aec
 //const { clienteverprueba } = require('./Servicios/auxxx');
 
 app.set("view engine", "ejs");

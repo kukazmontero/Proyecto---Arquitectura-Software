@@ -9,7 +9,7 @@ const datos = `dats${letra}`;
 const prueb = `prub${letra}`;
 const vprue = `vpre${letra}`;
 const dprue = `dpre${letra}`;
-const eprue = `epre${letra}`
+const eprue = `epre${letra}`;
 
 const sshConfig = {
   host: '200.14.84.16',

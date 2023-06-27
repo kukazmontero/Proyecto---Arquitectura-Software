@@ -13,7 +13,11 @@ const {
   prueb,
   vprue,
   dprue,
+<<<<<<< HEAD
   eprue,
+=======
+  vusri,
+>>>>>>> 21ee356231265461e7552b4ab650684d155b3aec
   sshConfig,
 } = require("./variables.js");
 const { EMPTY } = require("sqlite3");
