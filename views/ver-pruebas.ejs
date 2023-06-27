@@ -2,36 +2,42 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Ver Pruebas</title>
-</head>
-<body>
+  <head>
+    <title>Ver Pruebas</title>
+  </head>
+  <body>
+    <h1>Lista de Pruebas</h1>
 
+    <style>
+      .button {
+        border: none;
+        color: rgb(0, 0, 0);
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
 
-<h1>Lista de Pruebas</h1>
+      .button1 {
+        background-color: #ffffff;
+        border: 2px solid #000000;
+      }
+      .borde {
+        border: 2px solid #000000;
+      }
+      .form-container {
+        display: flex;
+      }
 
-<style>
-  .button {
-      border: none;
-      color: rgb(0, 0, 0);
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
-    
-  .button1 {background-color: #ffffff; border: 2px solid #000000;}
-  .borde {border: 2px solid #000000;}
-  </style>
+      .form-container form {
+        margin-right: 10px;
+      }
+    </style>
 
-
-
-
-<% if (respuesta.length > 0) { %>
-  <% respuesta.forEach(function(prueba) { %>
+    <% if (respuesta.length > 0) { %> <% respuesta.forEach(function(prueba) { %>
     <div class="borde">
       <p>Nombre de la prueba: <%= prueba.nombreprueba %></p>
       <p>Asignatura: <%= prueba.asignatura %></p>
@@ -41,25 +47,32 @@
       <p>id: <%= prueba.id %></p>
 
       <% if (rol === '1' || rol === '2') { %>
-        <a href="/agregarpregunta" class="button button1">Agregar Pregunta</a>
-        <a href="/modificarprueba" class="button button1">Modificar Prueba</a>
-       
-        <form action="/borrarprueba" method="POST">
-      
-          <input type="hidden" name="id" value=<%= prueba.id %>>
-          <input type="submit" class="button1" value="Borrar">
+      <a href="/agregarpregunta" class="button button1">Agregar Pregunta</a>
+      <div class="form-container">
+        <form action="/modificarprueba" method="POST">
+          <!-- Contenido del primer formulario -->
+          <input type="hidden" name="id" value="<%= prueba.id %>" />
+          <input type="hidden" name="nombreprueba" value="<%= prueba.nombreprueba %>" />
+          <input type="hidden" name="asignatura" value="<%= prueba.asignatura %>" />
+          <input type="hidden" name="num_preg" value="<%= prueba.num_preguntas %>" />
+          <input type="submit" class="button1" value="Modificar" />
         </form>
-      <% } %>
+      </div>
 
-      <% if (rol === '3') { %>
-        <a href="/realizarprueba" class="button button1">Realizar Prueba</a>
-      <% } %>
-      
+      <div class="form-container">
+        <form action="/borrarprueba" method="POST">
+          <!-- Contenido del segundo formulario -->
+          <input type="hidden" name="id" value="<%= prueba.id %>" />
+          <input type="submit" class="button1" value="Borrar" />
+        </form>
+      </div>
 
+      <% } %> <% if (rol === '3') { %>
+      <a href="/realizarprueba" class="button button1">Realizar Prueba</a>
+      <% } %>
     </div>
-  <% }); %>
-<% } else { %>
-  <p>No hay pruebas disponibles</p>
-<% } %>
-
-</body>
+    <% }); %> <% } else { %>
+    <p>No hay pruebas disponibles</p>
+    <% } %>
+  </body>
+</html>

@@ -13,6 +13,7 @@ const {
   prueb,
   vprue,
   dprue,
+  eprue,
   sshConfig,
 } = require("./variables.js");
 const { EMPTY } = require("sqlite3");
@@ -124,6 +125,20 @@ conn.on("ready", () => {
             }
             else if(results === "noborrado"){
               stream.write(`00017${datos}-borrado-no`);
+            }
+            console.log(results)
+          }
+        })
+      } else if (parts[1] === eprue) {
+        editarPrueba(parts[2], parts[3], parts[4], parts[5], parts[6], (err, results) =>{
+          if(err){
+            console.log(err);
+          } else{
+            if(results === "editado"){
+              stream.write(`00017${datos}-editado-si`);
+            }
+            else if(results === "noeditado"){
+              stream.write(`00017${datos}-editado-no`);
             }
             console.log(results)
           }
@@ -315,6 +330,24 @@ function borrarPrueba(id, correo_creador, callback) {
     }
   });
 }
+
+function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_preguntas, callback) {
+  const query =
+  "UPDATE tabla_pruebas SET nombreprueba = ?, asignatura = ?, num_preguntas = ?  WHERE ROWID = ? AND  correo_creador = ?";
+
+  db.run(query, [nombreprueba, asignatura, num_preguntas, id, correo_creador], function (err) {
+    if (err) {
+      callback(err);
+    } else {
+      if (this.changes > 0) {
+        callback(null, "editado");
+      } else {
+        callback(null, "noencontrado");
+      }
+    }
+  });
+}
+
 
 module.exports = {
   borrarPrueba
