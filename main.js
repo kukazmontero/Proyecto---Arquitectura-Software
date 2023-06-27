@@ -7,7 +7,7 @@ const path = require('path');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const clientelogin = require('./Clientes/cliente-login');
+const {clientelogin, clienteverusuario} = require('./Clientes/cliente-login');
 const clienteregistro = require('./Clientes/cliente-registro');
 const { clienteprueba, clienteverprueba, clienteborrarprueba } = require('./Clientes/cliente-prueba.js');
 //const { clienteverprueba } = require('./Servicios/auxxx');
@@ -161,6 +161,24 @@ app.post('/borrarprueba', async (req, res) => {
   }
 });
 
+app.get('/ver_usuarios', async (req, res) => {
+  if (req.session.loggedIn) {
+  let rol = req.session.rol;
+  try {
+    const respuesta = await clienteverusuario(rol);
+    console.log(respuesta);
+    res.render('ver_usuarios', { respuesta: respuesta, rol: rol });
+
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+  
+    
+  } else {
+    res.redirect('/');
+  }
+});
 
 
 app.get('/cerrar_sesion', (req, res) => {

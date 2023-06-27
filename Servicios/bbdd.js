@@ -13,6 +13,7 @@ const {
   prueb,
   vprue,
   dprue,
+  vusri,
   sshConfig,
 } = require("./variables.js");
 const { EMPTY } = require("sqlite3");
@@ -128,6 +129,36 @@ conn.on("ready", () => {
             console.log(results)
           }
         })
+      } else if (parts[1] === vusri) {
+        console.log(parts[2]);
+        verUsuario(parts[2], (err, results) => {
+          if (err) {
+            console.log(err);
+          } else {
+            if (results === "noencontrado") {
+              service = `${datos}`; 
+              const message2 = `${service}-verusuario-no`;
+              const largo = message2.length;
+              const largo2 = largo.toString().padStart(5, '0');
+              messagefinal = largo2 + message2;
+              console.log(`Mensaje enviado: ${messagefinal}`);
+              stream.write(messagefinal);
+            } else {
+                const message = results.reduce((acc, user) => {
+                const {usuario, contraseña, rol, correo } = user;
+                const resultado = `-[${usuario},${contraseña},${rol},${correo}]`;
+                return acc + resultado;
+              }, '');
+              service = `${datos}`; 
+              const message2 = `${service}-verusuario-si${message}`;
+              const largo = message2.length;
+              const largo2 = largo.toString().padStart(5, '0');
+              messagefinal = largo2 + message2;
+              console.log(`Mensaje enviado: ${messagefinal}`);
+              stream.write(messagefinal);          
+            }
+          }
+        });
       }
     });
     const command = `00010sinit${datos}`;
@@ -314,6 +345,40 @@ function borrarPrueba(id, correo_creador, callback) {
       }
     }
   });
+}
+
+function verUsuario( rol, callback) {
+  const query = `SELECT * FROM tabla_usuarios`;
+  /*console.log(rol)
+  console.log(parseInt(rol) === 1)*/
+
+  if (parseInt(rol) === 1 || parseInt(rol) === 2 ) {
+    // Rol igual a 1, buscar todas las pruebas
+    db.all(query, (err, results) => {
+      if (err) {
+        callback(err);
+      } else {
+        if (results.length === 0) {
+          console.log("Usuario no encontrada");
+          callback(null, "noencontrado");
+        } else {
+          const users = results.map((user) => {
+            const { usuario, contraseña, rol, correo} = user;
+            return {
+              usuario,
+              contraseña,
+              rol,
+              correo
+            };
+          });
+          callback(null, users);
+        }
+      }
+    });
+  } else {
+    // Otro rol no compatible
+    callback(null, "noencontrado");
+  }
 }
 
 module.exports = {
