@@ -33,31 +33,34 @@
 <% if (respuesta.length > 0) { %>
   <% respuesta.forEach(function(pregunta) { %>
     <div class="borde">
-      <p>ID de la pregunta: <%= pregunta.id_pregunta %></p>
       <p>Enunciado: <%= pregunta.enunciado %></p>
       <p>Opción A: <%= pregunta.OpcionA %></p>
       <p>Opción B: <%= pregunta.OpcionB %></p>
       <p>Opción C: <%= pregunta.OpcionC %></p>
       <p>Opción D: <%= pregunta.OpcionD %></p>
       <p>Opción E: <%= pregunta.OpcionE %></p>
-      <p>Opción Correcta: <%= pregunta.OpcionCorrecta %></p>
-      <p>ID de la Prueba: <%= pregunta.id_prueba %></p>
       
-    <form action="/borrarpregunta" method="POST">
-      
-        <input type="hidden" name="id" value=<%= pregunta.id_pregunta %>>
-        <input type="hidden" name="id_prueba" value=<%= pregunta.id_prueba %>>
-        <button type="submit" class="button button1">
-          Borrar Pregunta
-        </button>
-    </form>
-    <form action="/modificarpregunta" method="POST">
-      
-        <input type="hidden" name="id" value=<%= pregunta.id %>>
-        <button type="submit" class="button button1">
-          Modificar Pregunta
-        </button>
-    </form>
+      <% if (rol) { %>
+
+      <% }%>
+
+      <form action="/borrarpregunta" method="POST">
+        
+          <input type="hidden" name="id" value=<%= pregunta.id_pregunta %>>
+          <input type="hidden" name="id_prueba" value=<%= pregunta.id_prueba %>>
+          <button type="submit" class="button button1">
+            Borrar Pregunta
+          </button>
+      </form>
+      <form action="/modificarpregunta" method="POST">
+        
+          <input type="hidden" name="id" value=<%= pregunta.id %>>
+          <button type="submit" class="button button1">
+            Modificar Pregunta
+          </button>
+      </form>
+
+
     </div>
     
   <% }); %>

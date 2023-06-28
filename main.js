@@ -7,7 +7,7 @@ const path = require('path');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const { clientelogin, clienteverusuario, clienteregistro  } = require('./Clientes/cliente-login');
+const { clientelogin, clienteverusuario, clienteregistro, clienteborrarusuario  } = require('./Clientes/cliente-login');
 const { clienteprueba, clienteverprueba, clienteborrarprueba, clienteeditarprueba } = require('./Clientes/cliente-prueba.js');
 const { clientepregunta , clienteverpregunta, clienteborrarpregunta } = require('./Clientes/cliente-pregunta');
 
@@ -112,10 +112,16 @@ app.post('/registrousuario', async (req, res) => {
 app.get('/ver_usuarios', async (req, res) => {
   if (req.session.loggedIn) {
   let rol = req.session.rol;
+  let correo = req.session.correo;
   try {
-    const respuesta = await clienteverusuario(rol);
-    console.log(respuesta);
-    res.render('ver_usuarios', { respuesta: respuesta, rol: rol });
+    if(parseInt(rol)===1)  {
+        const respuesta = await clienteverusuario(rol);
+        console.log(respuesta);
+        res.render('ver_usuarios', { respuesta: respuesta, rol: rol , correo: correo});
+    }
+    else{
+      res.redirect(home);
+    }
 
   } catch (error) {
     console.error(error);
@@ -145,6 +151,32 @@ app.get('/registrarusuario', (req, res) => {
     res.redirect('/');
   }
 });
+app.post('/borrarusuario', async (req, res) => {
+  const correo = req.body.correo;
+  const rol = req.session.rol
+
+  if (req.session.loggedIn) {
+    if(parseInt(rol)===1){
+      try {
+        const respuesta = await clienteborrarusuario(correo);
+        console.log(respuesta);
+        res.redirect('ver_usuarios');
+
+      } catch (error) {
+        console.error(error);
+        res.send("Error en la conexión SSH");
+      }
+    }
+    else{
+      res.redirect('home');
+    }
+ 
+      
+  } else {
+    res.redirect('/');
+  }
+});
+
 
 app.get('/crearprueba', (req, res) => {
   if (req.session.loggedIn) {

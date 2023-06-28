@@ -19,6 +19,7 @@ const {
   bpreg,
   vusri,
   eprue,
+  busri,
   contarcaracteres
 } = require("../variables.js");
 const { EMPTY } = require("sqlite3");
@@ -108,6 +109,20 @@ conn.on("ready", () => {
             }
           }
         });
+      } else if (parts[1] === busri) {
+        borrarusuario(parts[2], (err, results) =>{
+          if(err){
+            console.log(err);
+          } else{
+            if(results === "borrado"){
+              stream.write(`00017${datos}-borrado-si`);
+            }
+            else if(results === "noencontrado"){
+              stream.write(`00017${datos}-borrado-no`);
+            }
+            console.log(results)
+          }
+        })
       } else if (parts[1] === prueb) {
         crearprueba(parts[2], parts[3], parts[4], parts[5], (err, results) => {
           if (err) {
@@ -158,7 +173,7 @@ conn.on("ready", () => {
             if(results === "borrado"){
               stream.write(`00017${datos}-borrado-si`);
             }
-            else if(results === "noborrado"){
+            else if(results === "noencontrado"){
               stream.write(`00017${datos}-borrado-no`);
             }
             console.log(results)
@@ -312,6 +327,22 @@ function ingreso(correo, password, callback) {
     }
   });
 }
+function borrarusuario(correo, callback) {
+  const query = "DELETE FROM tabla_usuarios WHERE correo = ?";
+
+  db.run(query, [correo], function (err) {
+    if (err) {
+      callback(err);
+    } else {
+      if (this.changes > 0) {
+        callback(null, "borrado");
+      } else {
+        callback(null, "noencontrado");
+      }
+    }
+  });
+    
+}
 function crearprueba(
   nombreprueba,
   asignatura,
@@ -405,7 +436,7 @@ function verPrueba( rol, callback) {
   }
 }
 function borrarPrueba(id, correo_creador, callback) {
-  const query = "DELETE FROM tabla_pruebas WHERE ROWID = ? AND correo_creador = ?";
+  const query = "DELETE FROM tabla_pruebas WHERE ROWID = ?";
   const deletePreguntasQuery = "DELETE FROM tabla_preguntas WHERE id_prueba = ?";
 
   // Eliminar todas las preguntas asociadas a la prueba
@@ -414,7 +445,7 @@ function borrarPrueba(id, correo_creador, callback) {
       callback(err);
     } else {
       // Continuar con la eliminación de la prueba
-      db.run(query, [id, correo_creador], function (err) {
+      db.run(query, [id], function (err) {
         if (err) {
           callback(err);
         } else {
@@ -547,7 +578,7 @@ function borrarpregunta(id_pregunta,id_prueba, callback) {
   db.get(countQuery, [id_prueba], function(err, row) {
     if (err) {
       console.log('Error al obtener la cantidad de preguntas:', err);
-      callback('noagregado');
+      callback('noeliminada');
     } else {
       if (row && row.cant_preg !== undefined && row.num_preguntas !== undefined) {
 

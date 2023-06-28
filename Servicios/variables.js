@@ -9,7 +9,7 @@ function randomizarCaracter() {
   return letra;
 }
 
-var letra = "j";
+var letra = "u";
 
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
@@ -22,12 +22,13 @@ const vpreg = `vprg${letra}`;
 const bpreg = `bprg${letra}`;
 const vusri = `vusr${letra}`;
 const eprue = `epre${letra}`;
+const busri = `busr${letra}`;
 
 const sshConfig = {
   host: '200.14.84.16',
   port: 8080,
-  username: 'gabriel.gonzalez1',
-  password: 'gabriel20781'
+  username: 'lukas.montero',
+  password: 'lukas12344321'
 };
 
 function contarcaracteres(message2){
@@ -49,6 +50,7 @@ module.exports = {
   bpreg,
   vusri,
   eprue,
+  busri,
   contarcaracteres,
   sshConfig
 };

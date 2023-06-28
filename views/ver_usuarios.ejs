@@ -31,22 +31,34 @@
 
 
 <% if (respuesta.length > 0) { %>
+  
   <% respuesta.forEach(function(user) { %>
+    <% if (user.correo != correo) { %>
+
+    
     <div class="borde">
       <p>Nombre del Usuario: <%= user.usuario %></p>
       <p>Rol: <%= user.rol %></p>
       <p>Correo: <%= user.correo %></p>
 
-      <% if (rol === '1' || rol === '2') { %>
-        <a href="/" class="button button1">Borrar Usuario</a>
+      <% if (rol === '1') { %>
+        <form action="/borrarusuario" method="POST">
+      
+          <input type="hidden" name="correo" value=<%= user.correo %>>
+          <button type="submit" class="button button1">
+            Borrar Usuario
+          </button>
+        </form>
+
         <a href="/" class="button button1">Modificar Usuario</a>
       <% } %>
-      
-
     </div>
+    
+    <% } %>
+
   <% }); %>
 <% } else { %>
-  <p>No hay pruebas disponibles</p>
+  <p>No hay Usuarios disponibles</p>
 <% } %>
 
 </body>
