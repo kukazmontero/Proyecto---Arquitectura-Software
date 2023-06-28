@@ -282,8 +282,9 @@ app.post("/modificarusuario", async (req, res) => {
   const user = req.body.user;
   const password = req.body.password;
   const rol = req.body.rol;
+  const correo = req.body.correo;
 
-  console.log(user, password, rol);
+  console.log(user, password, rol, correo);
 
   if (req.session.loggedIn) {
     try {
@@ -298,14 +299,13 @@ app.post("/modificarusuario", async (req, res) => {
 });
 
 app.post("/editusuario", async (req, res) => {
-  const { user, password, rol } = req.body;
-  const rol_admin = req.session.rol;
+  const { user, password, rol, correo } = req.body;
   try {
     const respuesta = await clienteeditarusuario(
       user,
       password,
       rol,
-      rol_admin
+      correo
     );
     console.log(respuesta);
     res.redirect("");

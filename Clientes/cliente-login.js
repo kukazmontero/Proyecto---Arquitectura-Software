@@ -240,7 +240,7 @@ function clienteborrarusuario(correo) {
 }
 
 
-function clienteeditarusuario(user, password, rol, rol_admin) {
+function clienteeditarusuario(user, password, rol, correo) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
     console.log("ENTRO 1", "cliente-editar-usuario")
@@ -254,7 +254,7 @@ function clienteeditarusuario(user, password, rol, rol_admin) {
         }
         console.log("ENTRO 2")
         service = `${eusri}`;
-        const message = `${service}-${user}-${password}-${rol}-${rol_admin}`;
+        const message = `${service}-${user}-${password}-${rol}-${correo}`;
         const largo = message.length;
         const largo2 = largo.toString().padStart(5, "0"); //borro los 5 primeros caracteres 00014
         messagefinal = largo2 + message;

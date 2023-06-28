@@ -252,11 +252,11 @@ conn.on("ready", () => {
           if(err){
             console.log(err);
           } else{
-            if(results === "editado"){
-              stream.write(`00017${datos}-usuario-editado-si`);
+            if(results === "editado-usuario"){
+              stream.write(`00017${datos}-usuario-si-editado`);
             }
-            else if(results === "noeditado"){
-              stream.write(`00017${datos}-usuario-editado-no`);
+            else if(results === "usuario-noeditado"){
+              stream.write(`00017${datos}-usuario-no-editado`);
             }
             console.log(results)
           }
@@ -524,23 +524,24 @@ function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_pregunta
   });
 }
 
-function editarUsuario(usuario, contraseña, rol, rol_admin, callback) {
-  const selectQuery = "SELECT * FROM tabla_usuarios WHERE usuario = ? AND contraseña = ? AND rol = ?"; 
-  const updateQuery = "UPDATE tabla_usuarios SET usuario = ?, contraseña = ?, rol = ? WHERE rol = ?";
+function editarUsuario(usuario, contraseña, rol, correo, callback) {
+  const query = `SELECT * FROM tabla_usuarios WHERE correo = ?`; //tengo que seleccionar el usuario por el correo
+  const updateQuery = "UPDATE tabla_usuarios SET usuario = ?, contraseña = ?, rol = ? WHERE correo = ?";
 
-  db.get(selectQuery, [usuario, contraseña, rol], function(err, row) {
+  db.get(query, [correo], function(err, results) {
     if (err) {
       callback(err);
     } else {
-      if (row) {
-        db.run(updateQuery, [usuario, contraseña, rol, rol_admin], function(err) {
+      console.log(results)
+      if (results) {
+        db.run(updateQuery, [usuario, contraseña, rol, correo], function(err) {
           if (err) {
             callback(err);
           } else {
             if (this.changes > 0) {
               callback(null, "editado-usuario");
             } else {
-              callback(null, "usuario-noencontrado");
+              callback(null, "usuario-noeditado");
             }
           }
         });

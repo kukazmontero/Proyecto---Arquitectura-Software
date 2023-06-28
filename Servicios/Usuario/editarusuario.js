@@ -24,7 +24,7 @@ conn.on('ready', () => {
         if(parts[0] ===`${eusri}`){
           if (response.trim() !== '' && parts[1]) {
             servicio = `${datos}`;
-            console.log(`user: ${parts[1]}`, `password: ${parts[2]}`, `rol: ${parts[3]}`, `rol_admin: ${parts[4]}`)
+            console.log(`user: ${parts[1]}`, `password: ${parts[2]}`, `rol: ${parts[3]}`, `corrreo: ${parts[4]}`)
             nuevaconsulta =`${servicio}-${eusri}-${parts[1]}-${parts[2]}-${parts[3]}-${parts[4]}`;
             messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
