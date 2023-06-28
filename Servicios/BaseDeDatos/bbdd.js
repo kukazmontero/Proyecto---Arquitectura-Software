@@ -20,6 +20,7 @@ const {
   vusri,
   eprue,
   busri,
+  eusri,
   contarcaracteres
 } = require("../variables.js");
 const { EMPTY } = require("sqlite3");
@@ -246,7 +247,21 @@ conn.on("ready", () => {
             console.log(results)
           }
         })
-      }
+      } else if (parts[1] === eusri) {
+        editarUsuario(parts[2], parts[3], parts[4], parts[5], (err, results) =>{
+          if(err){
+            console.log(err);
+          } else{
+            if(results === "editado"){
+              stream.write(`00017${datos}-usuario-editado-si`);
+            }
+            else if(results === "noeditado"){
+              stream.write(`00017${datos}-usuario-editado-no`);
+            }
+            console.log(results)
+          }
+        })
+      } 
       
     });
     const command = `00010sinit${datos}`;
@@ -508,6 +523,24 @@ function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_pregunta
     }
   });
 }
+
+function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_preguntas, callback) {
+  const query =
+  "UPDATE tabla_pruebas SET nombreprueba = ?, asignatura = ?, num_preguntas = ?  WHERE ROWID = ? AND  correo_creador = ?";
+
+  db.run(query, [nombreprueba, asignatura, num_preguntas, id, correo_creador], function (err) {
+    if (err) {
+      callback(err);
+    } else {
+      if (this.changes > 0) {
+        callback(null, "editado");
+      } else {
+        callback(null, "noencontrado");
+      }
+    }
+  });
+}
+
 function crearpregunta(enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba, callback) {
   const countQuery = "SELECT cant_preg, num_preguntas FROM tabla_pruebas WHERE ROWID = ?";
   db.get(countQuery, [id_prueba], function(err, row) {

@@ -2,7 +2,7 @@ const { Client } = require('ssh2');
 
 const conn = new Client();
 
-const { dprue, datos, sshConfig, contarcaracteres } = require('./variables.js');
+const { eusri, datos, sshConfig, contarcaracteres } = require('../variables');
 
 
 conn.on('ready', () => {
@@ -14,18 +14,18 @@ conn.on('ready', () => {
         console.log('Conexión al bus de servicio cerrada');
         conn.end();
       }).on('data', (data) => {
-      
+
 
         const response = data.toString().substring(5); 
         console.log('Datos recibidos:', response);
         const parts = response.split('-');
-        
-        
-        if(parts[0] ===`${dprue}`){
+
+
+        if(parts[0] ===`${eusri}`){
           if (response.trim() !== '' && parts[1]) {
             servicio = `${datos}`;
-            console.log(`ROWID: ${parts[1]}`, `correo_creador: ${parts[2]}`)
-            nuevaconsulta =`${servicio}-${dprue}-${parts[1]}-${parts[2]}`;
+            console.log(`user: ${parts[1]}`, `password: ${parts[2]}`, `rol: ${parts[3]}`, `rol_admin: ${parts[4]}`)
+            nuevaconsulta =`${servicio}-${eusri}-${parts[1]}-${parts[2]}-${parts[3]}-${parts[4]}`;
             messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
             stream.write(messagefinal);
@@ -33,13 +33,13 @@ conn.on('ready', () => {
         }
         else{
             if(parts[2]==="si"){
-                let message = `${dprue}-`+parts.slice(1).join('-');
+                let message = `${eusri}-`+parts.slice(1).join('-');
                 let messagef = contarcaracteres(message);
                 console.log(`Mensaje final: ${messagef}`)
                 stream.write(messagef)
               }
               else if(parts[2]==="no"){
-                let message = `${dprue}-`+parts.slice(1).join('-');
+                let message = `${eusri}-`+parts.slice(1).join('-');
                 let messagef = contarcaracteres(message);
                 console.log(`Mensaje final: ${messagef}`)
                 stream.write(messagef)
@@ -47,7 +47,7 @@ conn.on('ready', () => {
         }
       });
 
-      const command = `00010sinit${dprue}`;
+      const command = `00010sinit${eusri}`;
       stream.write(command);
     });  
 

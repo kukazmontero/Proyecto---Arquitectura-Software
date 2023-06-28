@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registro</title>
+</head>
+<body>
+  <h1>Registro</h1>
+
+  <style>
+    .button {
+      border: none;
+      color: rgb(0, 0, 0);
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    
+    .button1 {background-color: #ffffff; border: 2px solid #000000;}
+    </style>
+
+  <form action="/editusuario" method="POST">
+    <label for="user">Nombre:</label>
+    <input type="text" id="user" name="user" required><br><br>
+
+    <label for="password">Contraseña:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <label for="rol">Rol:</label>
+    <select id="rol" name="rol" required>
+      <option value="1">Admin</option>
+      <option value="2">Profesor</option>
+      <option value="3">Alumno</option>
+    </select><br><br>
+
+    <input type="submit" class="button1" value="Editar">
+  </form>
+</body>
+</html>

@@ -2,63 +2,60 @@
 
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Ver Usuarios</title>
-</head>
-<body>
+  <head>
+    <title>Ver Usuarios</title>
+  </head>
+  <body>
+    <h1>Lista de Usuarios</h1>
 
+    <style>
+      .button {
+        border: none;
+        color: rgb(0, 0, 0);
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
 
-<h1>Lista de Usuarios</h1>
+      .button1 {
+        background-color: #ffffff;
+        border: 2px solid #000000;
+      }
+      .borde {
+        border: 2px solid #000000;
+      }
+    </style>
 
-<style>
-  .button {
-      border: none;
-      color: rgb(0, 0, 0);
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
-    
-  .button1 {background-color: #ffffff; border: 2px solid #000000;}
-  .borde {border: 2px solid #000000;}
-  </style>
-
-
-
-
-<% if (respuesta.length > 0) { %>
-  
-  <% respuesta.forEach(function(user) { %>
+    <% if (respuesta.length > 0) { %> <% respuesta.forEach(function(user) { %>
     <% if (user.correo != correo) { %>
 
-    
     <div class="borde">
       <p>Nombre del Usuario: <%= user.usuario %></p>
       <p>Rol: <%= user.rol %></p>
       <p>Correo: <%= user.correo %></p>
 
       <% if (rol === '1') { %>
-        <form action="/borrarusuario" method="POST">
-      
-          <input type="hidden" name="correo" value=<%= user.correo %>>
-          <button type="submit" class="button button1">
-            Borrar Usuario
-          </button>
-        </form>
+      <form action="/borrarusuario" method="POST">
+        <input type="hidden" name="correo" value="<%" ="user.correo" % />>
+        <button type="submit" class="button button1">Borrar Usuario</button>
+      </form>
 
-        <a href="/" class="button button1">Modificar Usuario</a>
+      <form action="/modificarusuario" method="Post">
+        <input type="hidden" name="user" value="<%= user.usuario %>" />
+        <input type="hidden" name="password" value="<%= user.contraseña %>" />
+        <input type="hidden" name="correo" value="<%= user.correo %>" />
+        <input type="hidden" name="rol" value="<%= user.rol %>" />
+        <button type="submit" class="button button1">Modificar Usuario</button>
+      </form>
       <% } %>
     </div>
-    
+
+    <% } %> <% }); %> <% } else { %>
+    <p>No hay Usuarios disponibles</p>
     <% } %>
-
-  <% }); %>
-<% } else { %>
-  <p>No hay Usuarios disponibles</p>
-<% } %>
-
-</body>
+  </body>
+</html>
