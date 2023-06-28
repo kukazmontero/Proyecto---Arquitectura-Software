@@ -21,7 +21,7 @@ const apreg = `aprg${letra}`;
 const vpreg = `vprg${letra}`;
 const bpreg = `bprg${letra}`;
 const vusri = `vusr${letra}`;
-const eprue = `epre${letra}`
+const eprue = `epre${letra}`;
 
 const sshConfig = {
   host: '200.14.84.16',

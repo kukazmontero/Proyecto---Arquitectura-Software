@@ -7,10 +7,9 @@ const path = require('path');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const {clientelogin, clienteverusuario} = require('./Clientes/cliente-login');
-const clienteregistro = require('./Clientes/cliente-registro');
+const { clientelogin, clienteverusuario, clienteregistro  } = require('./Clientes/cliente-login');
 const { clienteprueba, clienteverprueba, clienteborrarprueba, clienteeditarprueba } = require('./Clientes/cliente-prueba.js');
-const {clientepregunta , clienteverpregunta, clienteborrarpregunta} = require('./Clientes/cliente-pregunta');
+const { clientepregunta , clienteverpregunta, clienteborrarpregunta } = require('./Clientes/cliente-pregunta');
 
 //const { clienteverprueba } = require('./Servicios/auxxx');
 

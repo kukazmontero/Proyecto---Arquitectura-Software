@@ -2,7 +2,10 @@ const { spawn } = require('child_process');
 const path = require('path');
 
 // Archivos de servicio a ejecutar
-const servicios = ['bbdd.js', 'registro.js', 'pruebas.js', 'login.js', 'verpruebas.js', 'borrarprueba.js',  'agregarpreg.js', 'verpreguntas.js', 'borrarpregunta.js', 'editarprueba.js', 'verusuario.js'];
+const servicios = ['BaseDeDatos/bbdd.js', 'Usuario/registro.js', 'Pruebas/pruebas.js',
+ 'Usuario/login.js', 'Pruebas/verpruebas.js', 'Pruebas/borrarprueba.js',  
+ 'Preguntas/agregarpreg.js', 'Preguntas/verpreguntas.js', 'Preguntas/borrarpregunta.js', 
+ 'Pruebas/editarprueba.js', 'Usuario/verusuario.js'];
 
 servicios.forEach((servicio) => {
   const nombreServicio = path.basename(servicio, '.js'); // Obtener el nombre del servicio sin la extensión
@@ -19,4 +22,3 @@ servicios.forEach((servicio) => {
     console.error(`[${nombreServicio}] Error: ${data}`);
   });
 });
-
