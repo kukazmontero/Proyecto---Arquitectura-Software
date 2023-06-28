@@ -9,7 +9,7 @@ function randomizarCaracter() {
   return letra;
 }
 
-var letra = "y";
+var letra = "o";
 
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
@@ -28,8 +28,8 @@ const eusri = `eusr${letra}`;
 const sshConfig = {
   host: '200.14.84.16',
   port: 8080,
-  username: 'rodrigo.ordenes',
-  password: 'Rose0582.,'
+  username: 'lukas.montero',
+  password: 'lukas12344321'
 };
 
 function contarcaracteres(message2){

@@ -1,5 +1,5 @@
 const { Client } = require('ssh2');
-const { busri, regis, vusri, login, sshConfig } = require('../Servicios/variables.js');
+const {eusri, busri, regis, vusri, login, sshConfig } = require('../Servicios/variables.js');
 
 
 function clienteregistro(nombre, correo, password, rol) {

@@ -40,7 +40,7 @@
 
       <% if (rol === '1') { %>
       <form action="/borrarusuario" method="POST">
-        <input type="hidden" name="correo" value="<%" ="user.correo" % />>
+        <input type="hidden" name="correo" value="<%= user.correo %>"  />
         <button type="submit" class="button button1">Borrar Usuario</button>
       </form>
 

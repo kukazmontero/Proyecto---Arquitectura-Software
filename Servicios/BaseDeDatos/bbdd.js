@@ -524,22 +524,33 @@ function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_pregunta
   });
 }
 
-function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_preguntas, callback) {
-  const query =
-  "UPDATE tabla_pruebas SET nombreprueba = ?, asignatura = ?, num_preguntas = ?  WHERE ROWID = ? AND  correo_creador = ?";
+function editarUsuario(usuario, contraseña, rol, rol_admin, callback) {
+  const selectQuery = "SELECT * FROM tabla_usuarios WHERE usuario = ? AND contraseña = ? AND rol = ?"; 
+  const updateQuery = "UPDATE tabla_usuarios SET usuario = ?, contraseña = ?, rol = ? WHERE rol = ?";
 
-  db.run(query, [nombreprueba, asignatura, num_preguntas, id, correo_creador], function (err) {
+  db.get(selectQuery, [usuario, contraseña, rol], function(err, row) {
     if (err) {
       callback(err);
     } else {
-      if (this.changes > 0) {
-        callback(null, "editado");
+      if (row) {
+        db.run(updateQuery, [usuario, contraseña, rol, rol_admin], function(err) {
+          if (err) {
+            callback(err);
+          } else {
+            if (this.changes > 0) {
+              callback(null, "editado-usuario");
+            } else {
+              callback(null, "usuario-noencontrado");
+            }
+          }
+        });
       } else {
-        callback(null, "noencontrado");
+        callback(null, "usuario-noencontrado");
       }
     }
   });
 }
+
 
 function crearpregunta(enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba, callback) {
   const countQuery = "SELECT cant_preg, num_preguntas FROM tabla_pruebas WHERE ROWID = ?";
