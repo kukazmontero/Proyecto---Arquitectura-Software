@@ -9,6 +9,7 @@ conn.on('ready', () => {
   console.log('Conexión SSH establecida');
     conn.exec('telnet localhost 5000', (err, stream) => {
       if (err) throw err;
+
       stream.on('close', () => {
         console.log('Conexión al bus de servicio cerrada');
         conn.end();

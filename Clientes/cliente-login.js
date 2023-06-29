@@ -1,5 +1,5 @@
 const { Client } = require('ssh2');
-const {eusri, busri, regis, vusri, login, sshConfig } = require('../Servicios/variables.js');
+const { eusri, busri, regis, vusri, login, sshConfig } = require('../Servicios/variables.js');
 
 
 function clienteregistro(nombre, correo, password, rol) {
@@ -238,8 +238,6 @@ function clienteborrarusuario(correo) {
   });
 
 }
-
-
 function clienteeditarusuario(user, password, rol, correo) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
@@ -286,7 +284,6 @@ function clienteeditarusuario(user, password, rol, correo) {
     conn.connect(sshConfig);
   });
 }
-
 
 module.exports = {
   clientelogin,

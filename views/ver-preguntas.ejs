@@ -46,7 +46,7 @@
 
       <form action="/borrarpregunta" method="POST">
         
-          <input type="hidden" name="id" value=<%= pregunta.id_pregunta %>>
+          <input type="hidden" name="id" value=<%= pregunta.ROWID %>>
           <input type="hidden" name="id_prueba" value=<%= pregunta.id_prueba %>>
           <button type="submit" class="button button1">
             Borrar Pregunta
@@ -54,7 +54,7 @@
       </form>
       <form action="/modificarpregunta" method="POST">
         
-          <input type="hidden" name="id" value=<%= pregunta.id %>>
+          <input type="hidden" name="id" value=<%= pregunta.ROWID %>>
           <button type="submit" class="button button1">
             Modificar Pregunta
           </button>

@@ -124,6 +124,20 @@ conn.on("ready", () => {
             console.log(results)
           }
         })
+      } else if (parts[1] === eusri) {
+        editarUsuario(parts[2], parts[3], parts[4], parts[5], (err, results) =>{
+          if(err){
+            console.log(err);
+          } else{
+            if(results === "editado-usuario"){
+              stream.write(`00017${datos}-usuario-si-editado`);
+            }
+            else if(results === "usuario-noeditado"){
+              stream.write(`00017${datos}-usuario-no-editado`);
+            }
+            console.log(results)
+          }
+        })
       } else if (parts[1] === prueb) {
         crearprueba(parts[2], parts[3], parts[4], parts[5], (err, results) => {
           if (err) {
@@ -247,21 +261,7 @@ conn.on("ready", () => {
             console.log(results)
           }
         })
-      } else if (parts[1] === eusri) {
-        editarUsuario(parts[2], parts[3], parts[4], parts[5], (err, results) =>{
-          if(err){
-            console.log(err);
-          } else{
-            if(results === "editado-usuario"){
-              stream.write(`00017${datos}-usuario-si-editado`);
-            }
-            else if(results === "usuario-noeditado"){
-              stream.write(`00017${datos}-usuario-no-editado`);
-            }
-            console.log(results)
-          }
-        })
-      } 
+      }
       
     });
     const command = `00010sinit${datos}`;
@@ -357,6 +357,33 @@ function borrarusuario(correo, callback) {
     }
   });
     
+}
+function editarUsuario(usuario, contraseña, rol, correo, callback) {
+  const query = `SELECT * FROM tabla_usuarios WHERE correo = ?`; //tengo que seleccionar el usuario por el correo
+  const updateQuery = "UPDATE tabla_usuarios SET usuario = ?, contraseña = ?, rol = ? WHERE correo = ?";
+
+  db.get(query, [correo], function(err, results) {
+    if (err) {
+      callback(err);
+    } else {
+      console.log(results)
+      if (results) {
+        db.run(updateQuery, [usuario, contraseña, rol, correo], function(err) {
+          if (err) {
+            callback(err);
+          } else {
+            if (this.changes > 0) {
+              callback(null, "editado-usuario");
+            } else {
+              callback(null, "usuario-noeditado");
+            }
+          }
+        });
+      } else {
+        callback(null, "usuario-noencontrado");
+      }
+    }
+  });
 }
 function crearprueba(
   nombreprueba,
@@ -523,36 +550,6 @@ function editarPrueba(id, nombreprueba, asignatura, correo_creador, num_pregunta
     }
   });
 }
-
-function editarUsuario(usuario, contraseña, rol, correo, callback) {
-  const query = `SELECT * FROM tabla_usuarios WHERE correo = ?`; //tengo que seleccionar el usuario por el correo
-  const updateQuery = "UPDATE tabla_usuarios SET usuario = ?, contraseña = ?, rol = ? WHERE correo = ?";
-
-  db.get(query, [correo], function(err, results) {
-    if (err) {
-      callback(err);
-    } else {
-      console.log(results)
-      if (results) {
-        db.run(updateQuery, [usuario, contraseña, rol, correo], function(err) {
-          if (err) {
-            callback(err);
-          } else {
-            if (this.changes > 0) {
-              callback(null, "editado-usuario");
-            } else {
-              callback(null, "usuario-noeditado");
-            }
-          }
-        });
-      } else {
-        callback(null, "usuario-noencontrado");
-      }
-    }
-  });
-}
-
-
 function crearpregunta(enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba, callback) {
   const countQuery = "SELECT cant_preg, num_preguntas FROM tabla_pruebas WHERE ROWID = ?";
   db.get(countQuery, [id_prueba], function(err, row) {

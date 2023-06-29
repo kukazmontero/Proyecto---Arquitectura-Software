@@ -9,7 +9,7 @@ function randomizarCaracter() {
   return letra;
 }
 
-var letra = "a";
+var letra = "x";
 
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
@@ -24,6 +24,7 @@ const vusri = `vusr${letra}`;
 const eprue = `epre${letra}`;
 const busri = `busr${letra}`;
 const eusri = `eusr${letra}`;
+
 
 const sshConfig = {
   host: '200.14.84.16',

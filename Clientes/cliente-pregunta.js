@@ -87,9 +87,9 @@ function clienteverpregunta(id) {
           if (aux === "verpreg") {
             if (aux2 === "si") {
               const preguntaData = pregunta.map(pregunta => {
-                const [id_pregunta, enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba] = pregunta.substring(1, pregunta.length - 1).split(',');
+                const [ROWID, enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_prueba] = pregunta.substring(1, pregunta.length - 1).split(',');
                 return {
-                  id_pregunta,
+                  ROWID,
                   enunciado,
                   OpcionA,
                   OpcionB,

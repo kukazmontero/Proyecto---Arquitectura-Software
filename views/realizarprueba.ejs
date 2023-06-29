@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Realizar Prueba</title>
+</head>
+<body>
+
+
+<h1>Lista de Preguntas</h1>
+
+<style>
+  .button {
+      border: none;
+      color: rgb(0, 0, 0);
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    
+  .button1 {background-color: #ffffff; border: 2px solid #000000;}
+  .borde {border: 2px solid #000000;}
+</style>
+
+<script>
+  var respuestas = [];
+  var preguntas = <%- JSON.stringify(respuesta) %>; // todas las preguntas
+  var preguntaActual = 0; // índice de la pregunta actual
+
+  function guardarRespuesta() {
+    var ROWID = document.getElementById('ROWID').textContent;
+    var selectElement = document.getElementById('OpcionCorrecta');
+    var respuestaSeleccionada = selectElement.value;
+    var respuestaIndex = respuestas.findIndex(function(respuesta) {
+      return respuesta.ROWID === ROWID;
+    });
+
+    if (respuestaIndex !== -1) {
+      respuestas[respuestaIndex].respuestaSeleccionada = respuestaSeleccionada;
+    } else {
+      var respuesta = {
+        ROWID: ROWID,
+        respuestaSeleccionada: respuestaSeleccionada
+      };
+      respuestas.push(respuesta);
+    }
+
+    console.log('Respuesta seleccionada:', respuestaSeleccionada);
+    console.log('ID de la pregunta:', ROWID);
+    console.log('Respuestas guardadas:', respuestas);
+}
+
+  function mostrarPregunta(i) {
+    // verifica si el índice es válido
+    if (i < 0 || i >= preguntas.length) {
+      return;
+    }
+
+    var pregunta = preguntas[i];
+
+    // obtén los elementos de la página y actualízalos
+    document.getElementById('ROWID').textContent = pregunta.ROWID;
+    document.getElementById('enunciado').textContent = pregunta.enunciado;
+    document.getElementById('OpcionA').textContent = "a) " + pregunta.OpcionA;
+    document.getElementById('OpcionB').textContent = "b) " + pregunta.OpcionB;
+    document.getElementById('OpcionC').textContent = "c) " + pregunta.OpcionC;
+    document.getElementById('OpcionD').textContent = "d) " + pregunta.OpcionD;
+    document.getElementById('OpcionE').textContent = "e) " + pregunta.OpcionE;
+    document.getElementById('OpcionCorrecta').onchange = function() { guardarRespuesta(pregunta.ROWID); };
+    preguntaActual = i;
+
+    // muestra u oculta los botones según sea necesario
+    document.getElementById('anterior').style.display = (i > 0) ? 'block' : 'none';
+    document.getElementById('siguiente').style.display = (i < preguntas.length - 1) ? 'block' : 'none';
+    document.getElementById('finalizar').style.display = (i === preguntas.length - 1) ? 'block' : 'none';
+  }
+
+  function siguientePregunta() {
+    mostrarPregunta(preguntaActual + 1);
+  }
+
+  function anteriorPregunta() {
+    mostrarPregunta(preguntaActual - 1);
+  }
+
+  function enviarRespuestas() {
+    fetch('/verificarpuntaje', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(respuestas),
+    })
+    .then(() => {
+      console.log('Solicitud enviada correctamente.');
+      // aquí puedes agregar cualquier lógica adicional necesaria después de enviar la solicitud
+      // si quieres redirigir en el cliente, puedes usar la siguiente línea
+      window.location.href = "/home";
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
+
+</script>
+
+
+<% if (respuesta.length > 0) { %>
+
+    <div class="borde">
+      <p id="ROWID"></p>
+
+      <p id="enunciado"></p>
+      <p id="OpcionA"></p>
+      <p id="OpcionB"></p>
+      <p id="OpcionC"></p>
+      <p id="OpcionD"></p>
+      <p id="OpcionE"></p>
+      
+      <label for=<%= `OpcionCorrecta` %>>Seleccione la alternativa Correcta</label>
+      <select id=<%= `OpcionCorrecta` %> name="OpcionCorrecta" required>
+        <option value="a">a</option>
+        <option value="b">b</option>
+        <option value="c">c</option>
+        <option value="d">d</option>
+        <option value="e">e</option>
+      </select><br><br>
+
+      <button type="submit" class="button button1" onclick="guardarRespuesta()">
+        Guardar Respuesta
+      </button>
+      
+      <button id="anterior" type="submit" class="button button1" onclick="anteriorPregunta()">
+        Anterior
+      </button>
+      <button id="siguiente" type="submit" class="button button1" onclick="siguientePregunta()">
+        Siguiente
+      </button>
+      
+      <button id="finalizar" type="submit" class="button button1" onclick="enviarRespuestas()">
+        Finalizar
+      </button>
+
+</div>
+
+<script>
+  // muestra la primera pregunta al cargar la página
+  mostrarPregunta(0);
+</script>
+
+<% } else { %>
+  <p>No hay preguntas disponibles</p>
+<% } %>
+
+</body>
+</html>
