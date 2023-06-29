@@ -1,6 +1,6 @@
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require("sqlite3").verbose();
 
-const db = new sqlite3.Database('mydatabase.db');
+const db = new sqlite3.Database("mydatabase.db");
 
 function randomizarCaracter() {
   var caracteres = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -9,7 +9,7 @@ function randomizarCaracter() {
   return letra;
 }
 
-var letra = "x";
+var letra = "a";
 
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
@@ -24,18 +24,18 @@ const vusri = `vusr${letra}`;
 const eprue = `epre${letra}`;
 const busri = `busr${letra}`;
 const eusri = `eusr${letra}`;
-
+const epreg = `eprx${letra}`;
 
 const sshConfig = {
-  host: '200.14.84.16',
+  host: "200.14.84.16",
   port: 8080,
-  username: 'lukas.montero',
-  password: 'lukas12344321'
+  username: "lukas.montero",
+  password: "lukas12344321",
 };
 
-function contarcaracteres(message2){
+function contarcaracteres(message2) {
   let largo = message2.length;
-  let largo2 = largo.toString().padStart(5, '0');
+  let largo2 = largo.toString().padStart(5, "0");
   let messagefinal = largo2 + message2;
   return messagefinal;
 }
@@ -43,7 +43,7 @@ function contarcaracteres(message2){
 module.exports = {
   regis,
   login,
-  datos, 
+  datos,
   prueb,
   vprue,
   dprue,
@@ -54,8 +54,9 @@ module.exports = {
   eprue,
   busri,
   eusri,
+  epreg,
   contarcaracteres,
-  sshConfig
+  sshConfig,
 };
 //module.exports = contarcaracteres;
 
@@ -69,5 +70,6 @@ const createTableQuery = `
   )
 `;
 
-const dropTableQuery = 'DROP TABLE IF EXISTS tabla_pruebas';
-const createTableQuery2 = 'CREATE TABLE tabla_pruebas (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, asignatura TEXT, correo_creador TEXT, num_preguntas INTEGER, cant_preg INTEGER)';
+const dropTableQuery = "DROP TABLE IF EXISTS tabla_pruebas";
+const createTableQuery2 =
+  "CREATE TABLE tabla_pruebas (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, asignatura TEXT, correo_creador TEXT, num_preguntas INTEGER, cant_preg INTEGER)";

@@ -55,6 +55,7 @@
       <form action="/modificarpregunta" method="POST">
         
           <input type="hidden" name="id" value=<%= pregunta.ROWID %>>
+          <input type="hidden" name="id_prueba" value=<%= pregunta.id_prueba %>>
           <button type="submit" class="button button1">
             Modificar Pregunta
           </button>

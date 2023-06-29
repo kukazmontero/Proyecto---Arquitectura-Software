@@ -5,7 +5,7 @@ const path = require('path');
 const servicios = ['BaseDeDatos/bbdd.js', 'Usuario/registro.js', 'Pruebas/pruebas.js',
  'Usuario/login.js', 'Pruebas/verpruebas.js', 'Pruebas/borrarprueba.js',  
  'Preguntas/agregarpreg.js', 'Preguntas/verpreguntas.js', 'Preguntas/borrarpregunta.js', 
- 'Pruebas/editarprueba.js', 'Usuario/verusuario.js', 'Usuario/borrarusuario.js'];
+ 'Pruebas/editarprueba.js', 'Usuario/verusuario.js', 'Usuario/borrarusuario.js', 'Preguntas/editarpregunta.js'];
  
 servicios.forEach((servicio) => {
   const nombreServicio = path.basename(servicio, '.js'); // Obtener el nombre del servicio sin la extensión
