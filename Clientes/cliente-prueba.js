@@ -172,7 +172,6 @@ function clienteborrarprueba(id_prueba, correo_creador) {
 function clienteeditarprueba(id_prueba, nombreprueba, asignatura, correo_creador, num_preguntas) {
   return new Promise((resolve, reject) => {
     const conn = new Client();
-    console.log("ENTRO 1")
     conn.on("ready", () => {
       console.log("Conexión SSH establecida");
 
@@ -181,7 +180,6 @@ function clienteeditarprueba(id_prueba, nombreprueba, asignatura, correo_creador
           reject(err);
           return;
         }
-        console.log("ENTRO 2")
         service = `${eprue}`;
         const message = `${service}-${id_prueba}-${nombreprueba}-${asignatura}-${correo_creador}-${num_preguntas}`;
         const largo = message.length;
@@ -194,7 +192,7 @@ function clienteeditarprueba(id_prueba, nombreprueba, asignatura, correo_creador
         stream.on("data", (data) => {
           const response = data.toString().substring(5);
           const parts = response.split("-");
-
+          
           if (parts[2] === "si") {
             resolve("Si");
           } else if (parts[2] === "no") {

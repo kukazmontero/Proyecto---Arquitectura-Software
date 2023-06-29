@@ -298,17 +298,7 @@ conn.on("ready", () => {
           }
         });
       } else if (parts[1] === epreg) {
-        editarPregunta(
-          parts[2],
-          parts[3],
-          parts[4],
-          parts[5],
-          parts[6],
-          parts[7],
-          parts[8],
-          parts[9],
-          parts[10],
-          (err, results) => {
+        editarPregunta(parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9], parts[10], (err, results) => {
             if (err) {
               console.log(err);
             } else {
@@ -846,6 +836,7 @@ function verpreguntas(id_prueba, callback) {
 }
 
 function editarPregunta(
+  id, //id de la pregunta a editar
   enunciado,
   OpcionA,
   OpcionB,
@@ -853,34 +844,21 @@ function editarPregunta(
   OpcionD,
   OpcionE,
   OpcionCorrecta,
-  id,
-  id_prueba,
+  id_prueba, //id de la prueba a la que pertenece la pregunta
   callback
 ) {
   //const query = `SELECT * FROM tabla_usuarios WHERE correo = ?`; //seleccionar el usuarioque
   const query = `SELECT * FROM tabla_preguntas WHERE ROWID = ?`; //seleccionar la pregunta a editar
   const updateQuery =
-    "UPDATE tabla_preguntas SET enunciado = ?, OpcionA = ?, OpcionB = ?, OpcionC = ?, OpcionD = ?, OpcionE = ?, OpcionCorrecta = ?, id_prueba = ? WHERE ROWID = ? AND id_prueba = ?";
+    "UPDATE tabla_preguntas SET enunciado = ?, OpcionA = ?, OpcionB = ?, OpcionC = ?, OpcionD = ?, OpcionE = ?, OpcionCorrecta = ? WHERE ROWID = ? AND id_prueba = ?";
 
   db.get(query, [id], function (err, results) {
     if (err) {
       callback(err);
     } else {
       if (results) {
-        db.run(
-          updateQuery,
-          [
-            enunciado,
-            OpcionA,
-            OpcionB,
-            OpcionC,
-            OpcionD,
-            OpcionE,
-            OpcionCorrecta,
-            id,
-            id_prueba,
-          ],
-          function (err) {
+        console.log("datos:" + [enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id, id_prueba]);
+        db.run(updateQuery, [enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id, id_prueba], function (err) {
             if (err) {
               callback(err);
             } else {

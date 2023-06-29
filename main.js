@@ -419,19 +419,12 @@ app.post("/editpre", async (req, res) => {
   const id_pregunta = req.session.id_pregunta;
   const id_prueba = req.session.id_prueba;
   console.log(
-    enunciado,
-    OpcionA,
-    OpcionB,
-    OpcionC,
-    OpcionD,
-    OpcionE,
-    OpcionCorrecta,
-    id_pregunta,
-    id_prueba
+    enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id_pregunta, id_prueba
   );
 
   try {
     const respuesta = await clienteeditarpregunta(
+      id_pregunta,
       enunciado,
       OpcionA,
       OpcionB,
@@ -439,11 +432,10 @@ app.post("/editpre", async (req, res) => {
       OpcionD,
       OpcionE,
       OpcionCorrecta,
-      id_pregunta,
       id_prueba
     );
     console.log(respuesta);
-    res.redirect("");
+    res.redirect("/ver-preguntas");
   } catch (error) {
     console.error(error);
     res.send("Error en la conexión SSH");

@@ -208,16 +208,15 @@ function clienteborrarpregunta(id, id_prueba) {
           service = `${epreg}`;
           const message = `${service}-${id_pregunta}-${enunciado}-${OpcionA}-${OpcionB}-${OpcionC}-${OpcionD}-${OpcionE}-${OpcionCorrecta}-${id_prueba}`;
           const largo = message.length;
-          const largo2 = largo.toString().padStart(5, "0"); //borro los 5 primeros caracteres 00014
+          const largo2 = largo.toString().padStart(5, "0");
           messagefinal = largo2 + message;
-          console.log(`Mensaje enviado: ${messagefinal}`);
-
+          console.log(`Mensaje enviado cliente-pregunta: ${messagefinal}`);
+          
           stream.write(messagefinal);
 
           stream.on("data", (data) => {
             const response = data.toString().substring(5);
             const parts = response.split("-");
-
             if (parts[2] === "si") {
               resolve("Si");
             } else if (parts[2] === "no") {

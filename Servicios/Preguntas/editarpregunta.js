@@ -3,11 +3,7 @@ const { Client } = require("ssh2");
 const conn = new Client();
 
 const {
-  epreg,
-  datos,
-  sshConfig,
-  contarcaracteres,
-} = require("../variables.js");
+  epreg, datos, sshConfig, contarcaracteres} = require("../variables.js");
 
 conn.on("ready", () => {
   console.log("Conexión SSH establecida");
@@ -27,17 +23,6 @@ conn.on("ready", () => {
         if (parts[0] === `${epreg}`) {
           if (response.trim() !== "" && parts[1]) {
             servicio = `${datos}`;
-            console.log(
-              `ROWID: ${parts[1]}`,
-              `enunciado: ${parts[2]}`,
-              `opcionA: ${parts[3]}`,
-              `opcionB: ${parts[4]}`,
-              `opcionC: ${parts[5]}`,
-              `opcionD: ${parts[6]}`,
-              `opcionE: ${parts[7]}`,
-              `opcionCorrecta: ${parts[8]}`,
-              `id_prueba: ${parts[9]}`
-            );
             nuevaconsulta = `${servicio}-${epreg}-${parts[1]}-${parts[2]}-${parts[3]}-${parts[4]}-${parts[5]}-${parts[6]}-${parts[7]}-${parts[8]}-${parts[9]}}`;
             messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
