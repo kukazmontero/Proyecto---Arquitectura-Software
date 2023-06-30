@@ -22,6 +22,7 @@ const {
   busri,
   eusri,
   epreg,
+  gptj,
   vpunt,
   contarcaracteres,
 } = require("../variables.js");
@@ -299,7 +300,17 @@ conn.on("ready", () => {
           }
         });
       } else if (parts[1] === epreg) {
-        editarPregunta(parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8], parts[9], parts[10], (err, results) => {
+        editarPregunta(
+          parts[2],
+          parts[3],
+          parts[4],
+          parts[5],
+          parts[6],
+          parts[7],
+          parts[8],
+          parts[9],
+          parts[10],
+          (err, results) => {
             if (err) {
               console.log(err);
             } else {
@@ -312,7 +323,20 @@ conn.on("ready", () => {
             }
           }
         );
-      }else if (parts[1] === vpunt) {
+      }  else if (parts[1] === gptj) {
+        let respuestas = parts.slice(3).join("-");
+        guardarpuntaje(parts[2], respuestas, (err, results) => {
+          if (err) {
+            console.log(err);
+          } else {
+            if (results === "agregado") {
+              stream.write(`00017${datos}-agregado-si`);
+            } else if (results === "noagregado") {
+              stream.write(`00017${datos}-agregado-no`);
+            }
+          }
+        });
+      }  else if (parts[1] === vpunt) {
         verPuntaje(parts[2], (err, puntajes) => {
           if (err) {
             console.log(err);
@@ -326,9 +350,9 @@ conn.on("ready", () => {
               console.log(`Mensaje enviado: ${messagefinal}`);
               stream.write(messagefinal);
             } else {
-              const message = puntajes.reduce((acc, puntaje) => {
-                const { nombreprueba, puntaje } = puntaje;
-                const resultado = `-[${nombreprueba},${puntaje}]`;
+              const message = puntajes.reduce((acc, puntaje_obtenido) => {
+                const { id_prueba, puntaje_obtenido: puntaje } = puntaje_obtenido;
+                const resultado = `-[${id_prueba},${puntaje_obtenido}]`;
                 return acc + resultado;
               }, "");
               service = `${datos}`;
@@ -342,7 +366,6 @@ conn.on("ready", () => {
           }
         });
       }
-      
     });
     const command = `00010sinit${datos}`;
     console.log(stream.write(command));
@@ -888,8 +911,34 @@ function editarPregunta(
       callback(err);
     } else {
       if (results) {
-        console.log("datos:" + [enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id, id_prueba]);
-        db.run(updateQuery, [enunciado, OpcionA, OpcionB, OpcionC, OpcionD, OpcionE, OpcionCorrecta, id, id_prueba], function (err) {
+        console.log(
+          "datos:" +
+            [
+              enunciado,
+              OpcionA,
+              OpcionB,
+              OpcionC,
+              OpcionD,
+              OpcionE,
+              OpcionCorrecta,
+              id,
+              id_prueba,
+            ]
+        );
+        db.run(
+          updateQuery,
+          [
+            enunciado,
+            OpcionA,
+            OpcionB,
+            OpcionC,
+            OpcionD,
+            OpcionE,
+            OpcionCorrecta,
+            id,
+            id_prueba,
+          ],
+          function (err) {
             if (err) {
               callback(err);
             } else {
@@ -908,26 +957,104 @@ function editarPregunta(
   });
 }
 
+function guardarpuntaje(correo, respuestas, callback) {
+  const parts = respuestas.split("-").map((item) => {
+    const [rowid, opcionSeleccionada] = item.replace(/[\[\]]/g, "").split(",");
+    return [parseInt(rowid), opcionSeleccionada];
+  });
+  const [id_pregunta, aux] = parts[0];
+
+  let preguntasCorrectas = 0;
+
+  const query =
+    "SELECT COUNT(*) AS puntaje_existente FROM tabla_puntajes WHERE id_prueba = ? AND correo_alumno = ?";
+
+  db.serialize(() => {
+    for (let i = 0; i < parts.length; i++) {
+      const [rowid, opcionSeleccionada] = parts[i];
+      console.log(`ROWID: ${rowid}, OPCIONSELECCIONADA:${opcionSeleccionada},`);
+
+      const query2 = `SELECT COUNT(*) AS cantidad_correctas FROM tabla_preguntas WHERE ROWID = ${rowid} AND OpcionCorrecta = '${opcionSeleccionada}'`;
+
+      db.get(query2, (err, row) => {
+        if (err) {
+          console.error(err);
+        } else {
+          preguntasCorrectas += row.cantidad_correctas;
+        }
+
+        if (i === parts.length - 1) {
+          console.log(`Cantidad de preguntas correctas: ${preguntasCorrectas}`);
+          db.get(
+            "SELECT id_prueba FROM tabla_preguntas WHERE ROWID = ?",
+            [id_pregunta],
+            (error, row) => {
+              idPrueba = row.id_prueba;
+              if (error) {
+                console.error("Error al ejecutar la consulta:", error);
+              } else {
+                if (row) {
+                  db.get(query, [row.id_prueba, correo], (error, row) => {
+                    if (error) {
+                      console.error("Error al ejecutar la consulta:", error);
+                      callback("noagregado");
+                    } else {
+                      if (row.puntaje_existente != 0) {
+                        callback("noagregado");
+                      } else {
+                        console.log(`El valor de id_prueba es: ${idPrueba}`);
+
+                        const query =
+                          "INSERT INTO tabla_puntajes (correo_alumno, id_prueba, puntaje_obtenido) VALUES (?, ?, ?)";
+                        db.run(
+                          query,
+                          [correo, idPrueba, preguntasCorrectas],
+                          function (error) {
+                            if (error) {
+                              console.error(
+                                "Error al guardar los valores:",
+                                error
+                              );
+                              callback("noagregado");
+                            } else {
+                              console.log(
+                                "Valores guardados correctamente. Fila insertada con ID:",
+                                this.lastID
+                              );
+                              callback("agregado");
+                            }
+                          }
+                        );
+                      }
+                    }
+                  });
+                } else {
+                  console.log(
+                    "No se encontró ninguna fila con ROWID igual a",
+                    id
+                  );
+                }
+              }
+            }
+          );
+        }
+      });
+    }
+  });
+}
 
 function verPuntaje(correo_usuario, callback) {
-  const query = `SELECT nombreprueba, puntaje FROM tabla_puntajes WHERE correo_usuario = ?`;
+  const query = `SELECT * FROM tabla_puntajes WHERE correo_alumno = ?`;
 
   db.all(query, [correo_usuario], (err, results) => {
     if (err) {
       callback(err);
     } else {
       if (results.length === 0) {
-        console.log("Usuario no encontrado o sin puntajes registrados");
+        console.log("Alumno no encontrado o sin puntajes registrados");
         callback(null, "noencontrado");
       } else {
-        const puntajes = results.map((resultado) => {
-          const { nombreprueba, puntaje } = resultado;
-          return {
-            nombreprueba,
-            puntaje
-          };
-        });
-        callback(null, puntajes);
+        callback(null, "resultados");
       }
     }
   });

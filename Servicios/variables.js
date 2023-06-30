@@ -25,6 +25,7 @@ const eprue = `epre${letra}`;
 const busri = `busr${letra}`;
 const eusri = `eusr${letra}`;
 const epreg = `eprx${letra}`;
+const gptj = `gptj${letra}`;
 const vpunt = `vpun${letra}`;
 
 const sshConfig = {
@@ -56,6 +57,7 @@ module.exports = {
   busri,
   eusri,
   epreg,
+  gptj,
   vpunt,
   contarcaracteres,
   sshConfig,
@@ -76,6 +78,28 @@ const dropTableQuery = "DROP TABLE IF EXISTS tabla_pruebas";
 const createTableQuery2 =
   "CREATE TABLE tabla_pruebas (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, asignatura TEXT, correo_creador TEXT, num_preguntas INTEGER, cant_preg INTEGER)";
 
-
 const dropTableQuery3 = "DROP TABLE IF EXISTS tabla_puntajes";
-const createTableQuery3 = "CREATE TABLE tabla_puntajes (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, correo_usuario TEXT, puntaje INTEGER)";
+const createTableQuery3 =
+  "CREATE TABLE tabla_puntajes (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, correo_usuario TEXT, puntaje INTEGER)";
+
+db.run(
+  `
+  CREATE TABLE IF NOT EXISTS tabla_puntajes (
+    correo_alumno TEXT,
+    id_prueba INTEGER,
+    puntaje_obtenido INTEGER,
+    FOREIGN KEY (correo_alumno) REFERENCES tabla_usuarios(correo),
+    FOREIGN KEY (id_prueba) REFERENCES tabla_pruebas(ROWID)
+  )
+`,
+  (error) => {
+    if (error) {
+      console.error("Error al crear la tabla tabla_puntajes:", error);
+    } else {
+      console.log("La tabla tabla_puntajes ha sido creada correctamente");
+    }
+
+    // Cierra la conexión a la base de datos
+    db.close();
+  }
+);

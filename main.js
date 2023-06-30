@@ -31,6 +31,7 @@ const {
 
 const {
   clienteverpuntaje,
+  clienteguardarpuntaje,
 } = require("./Clientes/cliente-puntajes.js");
 
 app.set("view engine", "ejs");
@@ -241,6 +242,7 @@ app.get("/ver_pruebas", async (req, res) => {
     res.redirect("/");
   }
 });
+
 app.post("/modificarprueba", async (req, res) => {
   const id_prueba = req.body.id;
   const nombreprueba = req.body.nombreprueba;
@@ -465,7 +467,33 @@ app.post("/ver_puntaje", async (req, res) => {
   }
 });
 
+app.post("/verificarpuntaje", async (req, res) => {
 
+  const respuestas = req.body;
+
+  console.log(respuestas);
+  const formattedData = respuestas.map(obj => `-[${obj.ROWID},${obj.respuestaSeleccionada}]`).join('');
+
+  console.log(formattedData);
+
+  let correo = req.session.correo;
+  try {
+    const respuesta = await clienteguardarpuntaje(correo, formattedData);
+
+    if (respuesta === "si") {
+      res.redirect("home");
+    } else if (respuesta === "no") {
+      res.redirect("home");
+    }
+  } catch (error) {
+    console.error(error);
+    res.send("Error en la conexión SSH");
+  }
+
+
+  // Responde con un mensaje de éxito.
+  res.json({ message: "Puntaje recibido y en proceso de verificación." });
+});
 
 app.get("/cerrar_sesion", (req, res) => {
   req.session.destroy();
