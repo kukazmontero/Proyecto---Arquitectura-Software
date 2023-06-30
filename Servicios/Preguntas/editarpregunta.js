@@ -23,18 +23,18 @@ conn.on("ready", () => {
         if (parts[0] === `${epreg}`) {
           if (response.trim() !== "" && parts[1]) {
             servicio = `${datos}`;
-            nuevaconsulta = `${servicio}-${epreg}-${parts[1]}-${parts[2]}-${parts[3]}-${parts[4]}-${parts[5]}-${parts[6]}-${parts[7]}-${parts[8]}-${parts[9]}}`;
+            nuevaconsulta = `${servicio}-${epreg}-${parts[1]}-${parts[2]}-${parts[3]}-${parts[4]}-${parts[5]}-${parts[6]}-${parts[7]}-${parts[8]}-${parts[9]}`;
             messagefinal = contarcaracteres(nuevaconsulta);
             console.log(`Mensaje enviado: ${messagefinal}`);
             stream.write(messagefinal);
           }
         } else {
-          if (parts[2] === "si") {
+          if (parts[3] === "si") {
             let message = `${epreg}-` + parts.slice(1).join("-");
             let messagef = contarcaracteres(message);
             console.log(`Mensaje final: ${messagef}`);
             stream.write(messagef);
-          } else if (parts[2] === "no") {
+          } else if (parts[3] === "no") {
             let message = `${epreg}-` + parts.slice(1).join("-");
             let messagef = contarcaracteres(message);
             console.log(`Mensaje final: ${messagef}`);
