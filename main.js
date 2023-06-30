@@ -29,7 +29,9 @@ const {
   clienteeditarpregunta,
 } = require("./Clientes/cliente-pregunta");
 
-//const { clienteverprueba } = require('./Servicios/auxxx');
+const {
+  clienteverpuntaje,
+} = require("./Clientes/cliente-puntajes.js");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -442,10 +444,36 @@ app.post("/editpre", async (req, res) => {
   }
 });
 
+app.post("/ver_puntaje", async (req, res) => {
+  if (req.session.loggedIn) {
+    let correo = req.session.corre;
+
+    try {
+      const respuesta = await clienteverpuntaje(correo);
+      console.log(respuesta);
+      if (parseInt(rol) === 1) {
+        res.render("ver-progreso", { respuesta: respuesta });
+      } else {
+        res.render("/home");
+      }
+    } catch (error) {
+      console.error(error);
+      res.send("Error en la conexión SSH");
+    }
+  } else {
+    res.redirect("/");
+  }
+});
+
+
+
 app.get("/cerrar_sesion", (req, res) => {
   req.session.destroy();
   res.redirect("/");
 });
+
+
+
 
 const bodyParser = require("body-parser");
 

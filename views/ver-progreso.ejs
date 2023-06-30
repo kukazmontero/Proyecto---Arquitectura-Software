@@ -1,0 +1,44 @@
+<!-- ver-pruebas.ejs -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ver Puntaje</title>
+  </head>
+  <body>
+    <h1>Lista de Puntajes</h1>
+
+    <style>
+      .button {
+        border: none;
+        color: rgb(0, 0, 0);
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+      }
+
+      .button1 {
+        background-color: #ffffff;
+        border: 2px solid #000000;
+      }
+      .borde {
+        border: 2px solid #000000;
+      }
+    </style>
+
+    <% if (respuesta.length > 0 || rol === '2') { %> <%
+    respuesta.forEach(function(puntajes) { %>
+    <div class="borde">
+      <p>Nombre de la prueba: <%= puntajes.nombreprueba %></p>
+      <p>Puntaje Obtenido: <%= puntajes.puntaje %></p>
+    </div>
+    <% }); %> <% } else { %>
+    <p>No hay puntajes disponibles</p>
+    <% } %>
+    <a href="/home" class="btn">Volver a Home</a>
+  </body>
+</html>

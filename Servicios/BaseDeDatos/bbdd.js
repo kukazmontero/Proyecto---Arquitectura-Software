@@ -22,6 +22,7 @@ const {
   busri,
   eusri,
   epreg,
+  vpunt,
   contarcaracteres,
 } = require("../variables.js");
 const { EMPTY } = require("sqlite3");
@@ -311,7 +312,37 @@ conn.on("ready", () => {
             }
           }
         );
+      }else if (parts[1] === vpunt) {
+        verPuntaje(parts[2], (err, puntajes) => {
+          if (err) {
+            console.log(err);
+          } else {
+            if (puntajes === "noencontrado") {
+              service = `${datos}`;
+              const message2 = `${service}-verpunt-no`;
+              const largo = message2.length;
+              const largo2 = largo.toString().padStart(5, "0");
+              messagefinal = largo2 + message2;
+              console.log(`Mensaje enviado: ${messagefinal}`);
+              stream.write(messagefinal);
+            } else {
+              const message = puntajes.reduce((acc, puntaje) => {
+                const { nombreprueba, puntaje } = puntaje;
+                const resultado = `-[${nombreprueba},${puntaje}]`;
+                return acc + resultado;
+              }, "");
+              service = `${datos}`;
+              const message2 = `${service}-verpunt-si${message}`;
+              const largo = message2.length;
+              const largo2 = largo.toString().padStart(5, "0");
+              messagefinal = largo2 + message2;
+              console.log(`Mensaje enviado: ${messagefinal}`);
+              stream.write(messagefinal);
+            }
+          }
+        });
       }
+      
     });
     const command = `00010sinit${datos}`;
     console.log(stream.write(command));
@@ -872,6 +903,31 @@ function editarPregunta(
         );
       } else {
         callback(null, "pregunta-noencontrado");
+      }
+    }
+  });
+}
+
+
+function verPuntaje(correo_usuario, callback) {
+  const query = `SELECT nombreprueba, puntaje FROM tabla_puntajes WHERE correo_usuario = ?`;
+
+  db.all(query, [correo_usuario], (err, results) => {
+    if (err) {
+      callback(err);
+    } else {
+      if (results.length === 0) {
+        console.log("Usuario no encontrado o sin puntajes registrados");
+        callback(null, "noencontrado");
+      } else {
+        const puntajes = results.map((resultado) => {
+          const { nombreprueba, puntaje } = resultado;
+          return {
+            nombreprueba,
+            puntaje
+          };
+        });
+        callback(null, puntajes);
       }
     }
   });

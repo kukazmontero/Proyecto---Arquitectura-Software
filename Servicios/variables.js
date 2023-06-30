@@ -9,7 +9,7 @@ function randomizarCaracter() {
   return letra;
 }
 
-var letra = "a";
+var letra = "y";
 
 const regis = `regs${letra}`;
 const login = `logn${letra}`;
@@ -25,6 +25,7 @@ const eprue = `epre${letra}`;
 const busri = `busr${letra}`;
 const eusri = `eusr${letra}`;
 const epreg = `eprx${letra}`;
+const vpunt = `vpun${letra}`;
 
 const sshConfig = {
   host: "200.14.84.16",
@@ -55,6 +56,7 @@ module.exports = {
   busri,
   eusri,
   epreg,
+  vpunt,
   contarcaracteres,
   sshConfig,
 };
@@ -73,3 +75,7 @@ const createTableQuery = `
 const dropTableQuery = "DROP TABLE IF EXISTS tabla_pruebas";
 const createTableQuery2 =
   "CREATE TABLE tabla_pruebas (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, asignatura TEXT, correo_creador TEXT, num_preguntas INTEGER, cant_preg INTEGER)";
+
+
+const dropTableQuery3 = "DROP TABLE IF EXISTS tabla_puntajes";
+const createTableQuery3 = "CREATE TABLE tabla_puntajes (ROWID INTEGER PRIMARY KEY AUTOINCREMENT, nombreprueba TEXT, correo_usuario TEXT, puntaje INTEGER)";
