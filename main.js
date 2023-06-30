@@ -325,7 +325,7 @@ app.post("/ver_preguntas", async (req, res) => {
     try {
       const respuesta = await clienteverpregunta(id_prueba);
       console.log(respuesta);
-      if (parseInt(rol) === 1) {
+      if (parseInt(rol) === 3) {
         res.render("realizarprueba", { respuesta: respuesta, rol: rol });
       } else {
         res.render("ver-preguntas", { respuesta: respuesta, rol: rol });
