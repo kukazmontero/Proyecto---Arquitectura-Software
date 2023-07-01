@@ -27,16 +27,16 @@
       </head>
       <body>
       
-        <% if (rol === '1') { %>
+        <% if (rol === '1' || rol === '2') { %>
           <a href="/registrarusuario" class="button button1">Registrar Usuario</a>
           <a href="/ver_usuarios" class="button button1">Ver Usuarios</a>
-          <a href="/borrar_usuarios" class="button button1">Borrar Usuarios</a>
+          <a href="/crearprueba" class="button button1">Crear Prueba</a>
         <% } %>
       
-      <a href="/crearprueba" class="button button1">Crear Prueba</a>
+      
       <a href="/ver_pruebas" class="button button1">Ver Pruebas</a>
       <a href="/cerrar_sesion" class="button button1">Cerrar Sesión</a>
-      <a href="/ver_progreso" class="button button1">Ver Progreso</a>
+      <a href="/ver_puntaje" class="button button1">Ver Progreso</a>
 
   </ul>
 </body>

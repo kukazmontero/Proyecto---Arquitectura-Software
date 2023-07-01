@@ -9,7 +9,7 @@ function randomizarCaracter() {
   return letra;
 }
 
-var letra = "y";
+var letra = "p";
 
 const regis = `regs${letra}`;
 const login = `logn${letra}`;

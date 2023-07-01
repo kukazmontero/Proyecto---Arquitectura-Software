@@ -563,6 +563,7 @@ function verPrueba(rol, callback) {
             .filter((prueba) => prueba.cant_preg === prueba.num_preguntas)
             .map((prueba) => {
               const {
+                ROWID,
                 nombreprueba,
                 asignatura,
                 correo_creador,
@@ -570,6 +571,7 @@ function verPrueba(rol, callback) {
                 cant_preg,
               } = prueba;
               return {
+                id: ROWID,
                 nombreprueba,
                 asignatura,
                 correo_creador,

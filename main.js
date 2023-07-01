@@ -3,6 +3,10 @@ const app = express();
 const port = 3000;
 const session = require("express-session");
 const path = require("path");
+const bodyParser = require("body-parser");
+
+// Parse application/json
+app.use(bodyParser.json());
 
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("Servicios/mydatabase.db");
@@ -15,6 +19,7 @@ const {
   clienteverusuario,
   clienteregistro,
   clienteborrarusuario,
+  clienteeditarusuario,
 } = require("./Clientes/cliente-login");
 const {
   clienteprueba,
@@ -446,18 +451,15 @@ app.post("/editpre", async (req, res) => {
   }
 });
 
-app.post("/ver_puntaje", async (req, res) => {
+app.get("/ver_puntaje", async (req, res) => {
   if (req.session.loggedIn) {
-    let correo = req.session.corre;
+    let correo = req.session.correo;
 
     try {
       const respuesta = await clienteverpuntaje(correo);
       console.log(respuesta);
-      if (parseInt(rol) === 1) {
         res.render("ver-progreso", { respuesta: respuesta });
-      } else {
-        res.render("/home");
-      }
+      
     } catch (error) {
       console.error(error);
       res.send("Error en la conexión SSH");
@@ -503,23 +505,8 @@ app.get("/cerrar_sesion", (req, res) => {
 
 
 
-const bodyParser = require("body-parser");
 
-// Parse application/json
-app.use(bodyParser.json());
 
-app.post("/verificarpuntaje", function (req, res) {
-  // El cuerpo de la solicitud se encuentra en req.body
-  const respuestas = req.body;
-
-  // Aquí es donde realizarías la verificación del puntaje.
-  // Por ahora, solo imprimiré las respuestas para demostrar que funciona.
-  console.log(respuestas);
-
-  // Responde con un mensaje de éxito.
-  res.json({ message: "Puntaje recibido y en proceso de verificación." });
-  res.redirect("/home");
-});
 
 // Iniciar el servidor
 app.listen(port, () => {
